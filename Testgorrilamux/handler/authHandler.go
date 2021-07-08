@@ -1,0 +1,123 @@
+package handler
+
+import (
+	"Testgorillamux/database"
+	"Testgorillamux/models"
+	"Testgorillamux/util"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"strconv"
+	"time"
+
+	"github.com/gorilla/securecookie"
+	"golang.org/x/crypto/bcrypt"
+)
+
+type ErrorResponse struct {
+	Err string
+}
+
+var cookieHandler = securecookie.New(
+	securecookie.GenerateRandomKey(64),
+	securecookie.GenerateRandomKey(32))
+
+func Register(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	stmt, err := database.DB.Prepare("INSERT INTO users(full_name, email, password, password_confirm, phone, address, date_of_birth, gender, avatar, role_id) VALUES (?,?,?,?,?,?,?,?,?,?)")
+	if err != nil {
+		panic(err.Error())
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err.Error())
+	}
+	var user models.User
+	json.Unmarshal(body, &user)
+
+	if user.Password != user.PasswordConfirm {
+		err := ErrorResponse{
+			Err: "Password does not match",
+		}
+		json.NewEncoder(w).Encode(err)
+	} else {
+		pass, err := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
+		if err != nil {
+			fmt.Println(err)
+			err := ErrorResponse{
+				Err: "Password Encryption  failed",
+			}
+			json.NewEncoder(w).Encode(err)
+		}
+		user.RoleId = 2
+		user.Password = string(pass)
+		user.PasswordConfirm = string(pass)
+		_, err = stmt.Exec(user.FullName, user.Email, user.Password, user.PasswordConfirm, user.Phone, user.Address, user.DateOfBirth, user.Gender, user.Avatar, user.RoleId)
+		if err != nil {
+			panic(err.Error())
+		}
+		fmt.Fprintf(w, "New user was created")
+		json.NewEncoder(w).Encode(user)
+	}
+}
+
+func Login(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err.Error())
+	}
+	var data map[string]string
+	json.Unmarshal(body, &data)
+	// json.Unmarshal(body, &user)
+	result, _ := database.DB.Query("SELECT full_name, email, password, phone, address, date_of_birth, gender, avatar, role_id FROM users WHERE email = ?", data["email"])
+	var user models.User
+	for result.Next() {
+		err := result.Scan(&user.FullName, &user.Email, &user.Password, &user.Phone, &user.Address, &user.DateOfBirth, &user.Gender, &user.Avatar, &user.RoleId)
+		if err != nil {
+			panic(err.Error())
+		}
+	}
+	if data["email"] != user.Email {
+		fmt.Println(err)
+		err := ErrorResponse{
+			Err: "User not found",
+		}
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data["password"])); err != nil {
+		fmt.Println(err)
+		err := ErrorResponse{
+			Err: "Wrong password",
+		}
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+	token, err := util.GenerateJwt(strconv.Itoa(int(user.Id)))
+	if err != nil {
+		panic(err.Error())
+	}
+	if encoded, err := cookieHandler.Encode("jwt", token); err == nil {
+		cookie := &http.Cookie{
+			Name:    "jwt",
+			Value:   encoded,
+			Expires: time.Now().Add(time.Hour * 24),
+		}
+		http.SetCookie(w, cookie)
+	}
+	json.NewEncoder(w).Encode("Login successfully")
+	json.NewEncoder(w).Encode(user)
+}
+
+func Logout(w http.ResponseWriter, r *http.Request) {
+	cookie := &http.Cookie{
+		Name:    "jwt",
+		Value:   "",
+		Expires: time.Now().Add(-time.Hour),
+		MaxAge:  -1,
+	}
+	http.SetCookie(w, cookie)
+	json.NewEncoder(w).Encode("Success")
+}
