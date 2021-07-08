@@ -25,7 +25,7 @@ var cookieHandler = securecookie.New(
 
 func Register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	stmt, err := database.DB.Prepare("INSERT INTO users(full_name, email, password, password_confirm, phone, address, date_of_birth, gender, avatar, role_id) VALUES (?,?,?,?,?,?,?,?,?,?)")
+	stmt, err := database.DB.Prepare("INSERT INTO users(full_name, email, password, phone, address, date_of_birth, gender, avatar, role_id) VALUES (?,?,?,?,?,?,?,?,?)")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -33,33 +33,43 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err.Error())
 	}
-	var user models.User
-	json.Unmarshal(body, &user)
+	var data map[string]string
+	json.Unmarshal(body, &data)
 
-	if user.Password != user.PasswordConfirm {
+	if data["password"] != data["password_confirm"] {
 		err := ErrorResponse{
 			Err: "Password does not match",
 		}
 		json.NewEncoder(w).Encode(err)
-	} else {
-		pass, err := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
-		if err != nil {
-			fmt.Println(err)
-			err := ErrorResponse{
-				Err: "Password Encryption  failed",
-			}
-			json.NewEncoder(w).Encode(err)
-		}
-		user.RoleId = 2
-		user.Password = string(pass)
-		user.PasswordConfirm = string(pass)
-		_, err = stmt.Exec(user.FullName, user.Email, user.Password, user.PasswordConfirm, user.Phone, user.Address, user.DateOfBirth, user.Gender, user.Avatar, user.RoleId)
-		if err != nil {
-			panic(err.Error())
-		}
-		fmt.Fprintf(w, "New user was created")
-		json.NewEncoder(w).Encode(user)
+		return
 	}
+	pass, err := bcrypt.GenerateFromPassword([]byte(data["password"]), 14)
+	if err != nil {
+		fmt.Println(err)
+		err := ErrorResponse{
+			Err: "Password Encryption failed",
+		}
+		json.NewEncoder(w).Encode(err)
+	}
+	roleId := 2
+	user := models.User{
+		FullName:    data["full_name"],
+		Email:       data["email"],
+		Password:    pass,
+		Phone:       data["phone"],
+		Address:     data["address"],
+		DateOfBirth: data["date_of_birth"],
+		Gender:      data["gender"],
+		Avatar:      data["avatar"],
+		RoleId:      uint(roleId),
+	}
+
+	_, err = stmt.Exec(user.FullName, user.Email, user.Password, user.Phone, user.Address, user.DateOfBirth, user.Gender, user.Avatar, user.RoleId)
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Fprintf(w, "New user was created")
+	json.NewEncoder(w).Encode(user)
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {

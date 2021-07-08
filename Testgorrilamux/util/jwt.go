@@ -13,7 +13,6 @@ func GenerateJwt(issuer string) (string, error) {
 		Issuer:    issuer,
 		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
 	})
-
 	return claim.SignedString([]byte(SecretKey))
 }
 

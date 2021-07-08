@@ -2,20 +2,23 @@ package routes
 
 import (
 	"Testgorillamux/handler"
+	"Testgorillamux/middlewares"
 
 	"github.com/gorilla/mux"
 )
 
 func Setup(router *mux.Router) {
 	router.HandleFunc("/api/products", handler.GetProducts).Methods("GET")
-	router.HandleFunc("/api/products", handler.CreateProduct).Methods("POST")
 	router.HandleFunc("/api/products/{id}", handler.GetProduct).Methods("GET")
-	router.HandleFunc("/api/products/{id}", handler.UpdateProduct).Methods("PUT")
-	router.HandleFunc("/api/products/{id}", handler.DeleteProduct).Methods("DELETE")
 
+	s := router.PathPrefix("/auth").Subrouter()
+	s.Use(middlewares.JwtVerify)
+	s.HandleFunc("/api/products", handler.CreateProduct).Methods("POST")
+	s.HandleFunc("/api/products/{id}", handler.UpdateProduct).Methods("PUT")
+	s.HandleFunc("/api/products/{id}", handler.DeleteProduct).Methods("DELETE")
 	router.HandleFunc("/api/register", handler.Register).Methods("POST")
 	router.HandleFunc("/api/login", handler.Login).Methods("POST")
-	router.HandleFunc("/api/logout", handler.Logout).Methods("POST")
+	s.HandleFunc("/api/logout", handler.Logout).Methods("POST")
 
 	// router.HandleFunc("/pictures", getPictures).Methods("GET")
 	// router.HandleFunc("/pictures", createPicture).Methods("POST")
