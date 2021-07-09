@@ -9,6 +9,7 @@ import Contact from "@/pages/contact/ContactPage.vue";
 import Cart from "@/pages/cart/CartPage.vue";
 import Login from "@/pages/login/LoginPage.vue";
 import Register from "@/pages/register/RegisterPage.vue";
+import Payment from "../pages/payment/Payment";
 
 const User = () => import("@/pages/user/UserPage.vue");
 const Profile = () => import("@/pages/user/ProfilePage.vue");
@@ -23,6 +24,7 @@ const routes = [
   { path: "/cart", component: Cart },
   { path: "/login", component: Login },
   { path: "/register", component: Register },
+  {path: "/payment", component: Payment},
   {
     path: "/user",
     component: User,
