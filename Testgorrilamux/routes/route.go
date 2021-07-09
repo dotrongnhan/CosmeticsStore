@@ -11,7 +11,7 @@ func Setup(router *mux.Router) {
 	router.HandleFunc("/api/products", handler.GetProducts).Methods("GET")
 	router.HandleFunc("/api/products/{id}", handler.GetProduct).Methods("GET")
 
-	s := router.PathPrefix("/auth").Subrouter()
+	s := router.PathPrefix("/").Subrouter()
 	s.Use(middlewares.JwtVerify)
 	s.HandleFunc("/api/products", handler.CreateProduct).Methods("POST")
 	s.HandleFunc("/api/products/{id}", handler.UpdateProduct).Methods("PUT")
