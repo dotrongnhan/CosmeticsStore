@@ -10,6 +10,7 @@ import Cart from "@/pages/cart/CartPage.vue";
 import Login from "@/pages/login/LoginPage.vue";
 import Register from "@/pages/register/RegisterPage.vue";
 import Payment from "../pages/payment/Payment";
+import ConfirmCheckout from "../pages/confirm-checkout/ConfirmCheckout";
 
 const User = () => import("@/pages/user/UserPage.vue");
 const Profile = () => import("@/pages/user/ProfilePage.vue");
@@ -25,6 +26,7 @@ const routes = [
   { path: "/login", component: Login },
   { path: "/register", component: Register },
   {path: "/payment", component: Payment},
+  {path: "/confirm-checkout", component: ConfirmCheckout},
   {
     path: "/user",
     component: User,

@@ -135,7 +135,8 @@
         <li class="list-inline-item"><a href="#">Support</a></li>
       </ul>
     </footer>
-  </div></template>
+  </div>
+</template>
 
 <script>
 export default {
