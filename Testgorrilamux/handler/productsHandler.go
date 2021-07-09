@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"Testgorillamux/database"
 	"Testgorillamux/models"
+	"Testgorillamux/repository"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -14,92 +14,69 @@ import (
 
 func GetProducts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
-	var products []models.Product
-
-	methods := r.URL.Query()
-	method, _ := strconv.Atoi(methods.Get("limit"))
-
-	result, err := database.DB.Query("SELECT P.id, P.title, P.description, P.image, P.price, P.category_id, P.is_sale, P.is_hot, P.sale_price FROM products P LIMIT ?", method)
-
-	if err != nil {
-		panic(err.Error())
-	}
-	defer result.Close()
-
-	for result.Next() {
-		var product models.Product
-		err := result.Scan(&product.Id, &product.Title, &product.Description, &product.Image, &product.Price, &product.CategoryId, &product.IsSale, &product.IsHot, &product.SalePrice)
-		if err != nil {
-			panic(err.Error())
-		}
-		products = append(products, product)
-	}
-	json.NewEncoder(w).Encode(products)
+	// var products []models.Product
+	params := r.URL.Query()
+	sortType := params.Get("sortType")
+	prop := params.Get("prop")
+	limit, _ := strconv.Atoi(params.Get("limit"))
+	offset, _ := strconv.Atoi(params.Get("offset"))
+	result := repository.GetProducts(sortType, prop, limit, offset)
+	json.NewEncoder(w).Encode(result)
 }
 
 func CreateProduct(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	stmt, err := database.DB.Prepare("INSERT INTO products(title, description, image, price, category_id, is_sale, is_hot, sale_price) VALUES (?,?,?,?,?,?,?,?)")
-	if err != nil {
-		panic(err.Error())
-	}
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		panic(err.Error())
 	}
 	var product models.Product
 	json.Unmarshal(body, &product)
-	_, err = stmt.Exec(product.Title, product.Description, product.Image, product.Price, product.CategoryId, product.IsSale, product.IsHot, product.SalePrice)
-	if err != nil {
-		panic(err.Error())
+	errr := repository.CreateProduct(product)
+	if errr != nil {
+		fmt.Fprintln(w, "Cannot create product!")
 	}
-	json.NewEncoder(w).Encode(product)
 	fmt.Fprintf(w, "New product was created")
+	json.NewEncoder(w).Encode(product)
 }
 
 func GetProduct(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
+	id, _ := strconv.Atoi(params["id"])
+	result := repository.GetProduct(id)
+	json.NewEncoder(w).Encode(result)
+}
 
-	result, err := database.DB.Query("SELECT id, title, description, image, price, category_id, is_sale, is_hot, sale_price FROM products WHERE id = ?", params["id"])
-	if err != nil {
-		panic(err.Error())
-	}
+func GetProductByCategoryName(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	name := params["category_name"]
+	result := repository.GetProductByCategoryName(name)
+	json.NewEncoder(w).Encode(result)
+}
 
-	defer result.Close()
-
-	var product models.Product
-
-	for result.Next() {
-		err := result.Scan(&product.Id, &product.Title, &product.Description, &product.Image, &product.Price, &product.CategoryId, &product.IsSale, &product.IsHot, &product.SalePrice)
-		if err != nil {
-			panic(err.Error())
-		}
-	}
-
-	json.NewEncoder(w).Encode(product)
+func GetProductByBrandName(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	name := params["brand_name"]
+	result := repository.GetProductByCategoryName(name)
+	json.NewEncoder(w).Encode(result)
 }
 
 func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
-	stmt, err := database.DB.Prepare("UPDATE products SET title=?,description=?,image=?,price=?,category_id=?,is_sale=?,is_hot=?,sale_price=? WHERE id = ?;")
-	if err != nil {
-		panic(err.Error())
-	}
-
+	id, _ := strconv.Atoi(params["id"])
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		panic(err.Error())
 	}
-
 	var product models.Product
 	json.Unmarshal(body, &product)
-	_, err = stmt.Exec(product.Title, product.Description, product.Image, product.Price, product.CategoryId, product.IsSale, product.IsHot, product.SalePrice, params["id"])
-	if err != nil {
-		panic(err.Error())
+	errr := repository.UpdateProduct(product, id)
+	if errr != nil {
+		fmt.Fprintln(w, "Cannot update product!")
 	}
 	json.NewEncoder(w).Encode(product)
 	fmt.Fprintf(w, "Product with ID = %s was updated", params["id"])
@@ -107,13 +84,10 @@ func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 
 func DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	stmt, err := database.DB.Prepare("DELETE FROM products WHERE id = ?")
-	if err != nil {
-		panic(err.Error())
-	}
-	_, err = stmt.Exec(params["id"])
-	if err != nil {
-		panic(err.Error())
+	id, _ := strconv.Atoi(params["id"])
+	errr := repository.DeleteProduct(id)
+	if errr != nil {
+		fmt.Fprintln(w, "Cannot delete product!")
 	}
 	fmt.Fprintf(w, "Product with ID = %s was deleted", params["id"])
 }

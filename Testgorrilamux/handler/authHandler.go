@@ -51,6 +51,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		}
 		json.NewEncoder(w).Encode(err)
 	}
+	roleId := 2
 	user := models.User{
 		FullName:    data["full_name"],
 		Email:       data["email"],
@@ -60,7 +61,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		DateOfBirth: data["date_of_birth"],
 		Gender:      data["gender"],
 		Avatar:      data["avatar"],
-		RoleId:      uint(2),
+		RoleId:      uint(roleId),
 	}
 
 	_, err = stmt.Exec(user.FullName, user.Email, user.Password, user.Phone, user.Address, user.DateOfBirth, user.Gender, user.Avatar, user.RoleId)
