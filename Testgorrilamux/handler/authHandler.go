@@ -72,6 +72,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(1)
 	w.Header().Set("Content-Type", "application/json")
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -80,6 +81,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	var data map[string]string
 	json.Unmarshal(body, &data)
 	// json.Unmarshal(body, &user)
+	fmt.Println(&data)
 	result, _ := database.DB.Query("SELECT full_name, email, password, phone, address, date_of_birth, gender, avatar, role_id FROM users WHERE email = ?", data["email"])
 	var user models.User
 	for result.Next() {

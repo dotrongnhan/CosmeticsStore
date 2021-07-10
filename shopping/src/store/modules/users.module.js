@@ -13,12 +13,13 @@ const getters = {};
 const actions = {
   async login({ commit }, user) {
     try {
-      const res = await axios.post("http://127.0.0.1:3000/api/user/login", user)
+      const res = await axios.post("http://localhost:8000/api/login", user)
       console.log(res)
       commit("setUser", user);
       commit("setLoginSuccess", true);
       commit("setLoginMessage", "");
     } catch (error) {
+      console.log(error)
       commit("setLoginSuccess", false);
 
       const errorResponse = error.response;

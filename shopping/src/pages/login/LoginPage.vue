@@ -132,10 +132,9 @@ export default {
         password: this.user.password,
       }).then(() => {
         this.isLoading = false;
-
-        if (this.isLoginSuccess) {
-          this.$router.push("/");
-        }
+        // if (this.isLoginSuccess) {
+        //   this.$router.push("/");
+        // }
       })
     },
   },
