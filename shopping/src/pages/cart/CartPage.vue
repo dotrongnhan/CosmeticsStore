@@ -10,8 +10,9 @@
                 <th class="column-1"></th>
                 <th class="column-2">Product</th>
                 <th class="column-3">Price</th>
-                <th class="column-4 p-l-70">Quantity</th>
-                <th class="column-5">Total</th>
+                <th class="column-4 t-center">Quantity</th>
+                <th class="column-4 t-center">Total</th>
+                <th  class="column-1"></th>
               </tr>
 
               <tr
@@ -27,7 +28,7 @@
                 <td class="column-2">{{ product.product.product_name }}</td>
                 <td class="column-3">{{ currency(product.product.price) }}</td>
                 <td class="column-4">
-                  <div class="flex-w bo5 of-hidden w-size17">
+                  <div class="flex-w bo5 of-hidden m-l-r-auto w-size17">
                     <button
                       class="
                         btn-num-product-down
@@ -73,7 +74,12 @@
                     </button>
                   </div>
                 </td>
-                <td class="column-5">{{ currency(product.quantity * Number(product.product.price)) }}</td>
+                <td class="column-5 t-center">{{ currency(product.quantity * Number(product.product.price)) }}</td>
+                <td class="column-1">
+                  <button class="flex-c-m w-50 bg1 bo-rad-8 hov1 s-text1 trans-0-4">
+                    X
+                  </button>
+                </td>
               </tr>
 
               <tr class="table-row">
