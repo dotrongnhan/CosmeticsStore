@@ -11,7 +11,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/gorilla/securecookie"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -19,9 +18,9 @@ type ErrorResponse struct {
 	Err string
 }
 
-var cookieHandler = securecookie.New(
-	securecookie.GenerateRandomKey(64),
-	securecookie.GenerateRandomKey(32))
+// var cookieHandler = securecookie.New(
+// 	securecookie.GenerateRandomKey(64),
+// 	securecookie.GenerateRandomKey(32))
 
 func Register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -105,28 +104,31 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err)
 		return
 	}
-	token, err := util.GenerateJwt(strconv.Itoa(int(user.Id)))
+	token, err := util.GenerateJwt(strconv.Itoa(int(user.RoleId)))
 	if err != nil {
 		panic(err.Error())
 	}
-	if encoded, err := cookieHandler.Encode("jwt", token); err == nil {
-		cookie := &http.Cookie{
-			Name:    "jwt",
-			Value:   encoded,
-			Expires: time.Now().Add(time.Hour * 24),
-		}
-		http.SetCookie(w, cookie)
+	cookie := &http.Cookie{
+		Name:     "jwt",
+		Value:    token,
+		Expires:  time.Now().Add(time.Hour * 24),
+		HttpOnly: true,
 	}
+	w.Header().Set("JWT", token)
+	http.SetCookie(w, cookie)
+	parsedToken, _ := util.ParseJwt(token)
+	json.NewEncoder(w).Encode(parsedToken)
 	json.NewEncoder(w).Encode("Login successfully")
 	json.NewEncoder(w).Encode(user)
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
 	cookie := &http.Cookie{
-		Name:    "jwt",
-		Value:   "",
-		Expires: time.Now().Add(-time.Hour),
-		MaxAge:  -1,
+		Name:     "jwt",
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
+		HttpOnly: true,
+		MaxAge:   -1,
 	}
 	http.SetCookie(w, cookie)
 	json.NewEncoder(w).Encode("Success")

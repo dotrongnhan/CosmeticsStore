@@ -1,19 +1,25 @@
 package middlewares
 
 import (
-	// "Testgorillamux/util"
+	"Testgorillamux/util"
 	"encoding/json"
 	"net/http"
 )
 
-func JwtVerify(next http.Handler) http.Handler {
+func JwtVerify(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// cookie, _ := r.Cookie("jwt")
-		header := r.Header.Get("Set-Token")
+		cookie, _ := r.Cookie("jwt")
+		if cookie == nil {
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode("Missing auth token")
+			return
+		}
+		// header := r.Header.Get("JWT")
+		roleId, _ := util.ParseJwt(cookie.Value)
 
-		if header == "" {
-			//Token is missing, returns with error code 403 Unauthorized
-			w.WriteHeader(http.StatusForbidden)
+		if roleId != "1" {
+			//Token is missing, returns with error code 401 Unauthorized
+			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode("Missing auth token")
 			return
 		}
