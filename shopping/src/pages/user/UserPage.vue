@@ -8,18 +8,14 @@
           'url(' + 'https://images.wallpaperscraft.com/image/brushes_cosmetics_set_114242_2560x1080.jpg' + ')',
       }"
     >
-      <h2 class="l-text2 t-center">User</h2>
+      <h2 class="l-text2 t-center">{{currentPath}}</h2>
     </section>
 
     <!-- content page -->
     <section class="bgwhite p-t-66 p-b-60">
       <div class="container">
-        <h3 class="text-center">
-          Welcome {{ user.firstName }} {{ user.lastName }}
-        </h3>
-
         <div class="row m-t-30">
-          <div class="col-sm-6 col-md-4 col-lg-3 p-b-50">
+          <div class="col-sm-6 col-md-4 col-lg-1 p-b-50">
             <ul>
               <li>
                 <router-link to="/user/profile">Profile</router-link>
@@ -33,7 +29,7 @@
             </ul>
           </div>
 
-          <div class="col-sm-6 col-md-8 col-lg-9 p-b-50">
+          <div class="col-sm-6 col-md-8 col-lg-11 p-b-50">
             <router-view/>
           </div>
         </div>
@@ -48,8 +44,12 @@ import { mapState } from "vuex";
 export default {
   name: "UserPage",
 
-  computed: mapState("users", ["isLoginSuccess", "user"]),
-
+  computed: {
+    ...mapState("users", ["isLoginSuccess", "user"]),
+},
+  // mounted() {
+  //   console.log(this.$router.currentRoute._value.fullPath.split("/")[2])
+  // },
   // created() {
   //   if (!this.isLoginSuccess) {
   //     this.$router.replace("/");
