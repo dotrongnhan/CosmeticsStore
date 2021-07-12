@@ -8,6 +8,8 @@ import (
 )
 
 func Setup(router *mux.Router) {
+
+	//products
 	router.HandleFunc("/api/products", handler.GetProducts).Methods("GET")
 	router.HandleFunc("/api/products/{id}", handler.GetProduct).Methods("GET")
 	router.HandleFunc("/api/products/cate/{category_name}", handler.GetProductByCategoryName).Methods("GET")
@@ -18,19 +20,32 @@ func Setup(router *mux.Router) {
 	router.HandleFunc("/api/products", middlewares.JwtVerify(handler.CreateProduct)).Methods("POST")
 	router.HandleFunc("/api/products/{id}", middlewares.JwtVerify(handler.UpdateProduct)).Methods("PUT")
 	router.HandleFunc("/api/products/{id}", middlewares.JwtVerify(handler.DeleteProduct)).Methods("DELETE")
+
+	//authentication
 	router.HandleFunc("/api/register", handler.Register).Methods("POST")
 	router.HandleFunc("/api/login", handler.Login).Methods("POST")
 	router.HandleFunc("/api/logout", handler.Logout).Methods("POST")
 
+	//brands
 	router.HandleFunc("/api/brands", handler.GetBrands).Methods("GET")
 	router.HandleFunc("/api/brands", handler.CreateBrand).Methods("POST")
 	router.HandleFunc("/api/brands/{id}", handler.GetBrand).Methods("GET")
 	router.HandleFunc("/api/brands/{id}", handler.UpdateBrand).Methods("PUT")
 	router.HandleFunc("/api/brands/{id}", handler.DeleteBrand).Methods("DELETE")
 
+	//categories
 	router.HandleFunc("/api/categories", handler.GetCategories).Methods("GET")
 	router.HandleFunc("/api/categories", handler.CreateCategory).Methods("POST")
 	router.HandleFunc("/api/categories/{id}", handler.GetCategory).Methods("GET")
 	router.HandleFunc("/api/categories/{id}", handler.UpdateCategory).Methods("PUT")
 	router.HandleFunc("/api/categories/{id}", handler.DeleteCategory).Methods("DELETE")
+
+	//orders
+	router.HandleFunc("/api/orders", handler.GetOrders).Methods("GET")
+	router.HandleFunc("/api/orders", handler.CreateOrder).Methods("POST")
+	router.HandleFunc("/api/orders/items", handler.CreateOrderItem).Methods("POST")
+	router.HandleFunc("/api/orders/{id}", handler.GetOrder).Methods("GET")
+	router.HandleFunc("/api/orders/{id}", handler.UpdateOrder).Methods("PUT")
+	router.HandleFunc("/api/orders/{id}", handler.DeleteOrder).Methods("DELETE")
+	router.HandleFunc("/api/orders/items/{id}", handler.DeleteOrderItem).Methods("DELETE")
 }
