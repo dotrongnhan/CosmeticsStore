@@ -4,19 +4,15 @@
       <div class="row">
         <div class="col-md-4 pb-2">
           <div class="profile-img">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS52y5aInsxSm31CvHOFHWujqUx_wWTS9iM6s7BAm21oEN_RiGoog" alt=""/>
-<!--            <div class="file btn btn-lg btn-primary">-->
-<!--              Change Photo-->
-<!--              <input type="file" name="file"/>-->
-<!--            </div>-->
+            <img :src="user.avatar" alt=""/>
           </div>
         </div>
         <div class="col-md-6">
           <div class="profile-head">
             <h3>
-              Kshiti Ghelani
+              {{user.full_name}}
             </h3>
-            <p class="proile-rating">Position : <span>Customer</span></p>
+            <p class="proile-rating">Position : <span>{{user.role_id === 1 ? "Admin" : "Customer"}}</span></p>
             <ul class="nav nav-tabs" id="myTab" role="tablist">
               <li class="nav-item">
                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">About</a>
@@ -37,7 +33,7 @@
                   <label>Full name</label>
                 </div>
                 <div class="col-md-6">
-                  <p>Kshiti123</p>
+                  <p>{{user.full_name}}</p>
                 </div>
               </div>
               <div class="row">
@@ -45,12 +41,12 @@
                   <label>Gender</label>
                 </div>
                 <div class="col-md-6">
-                  <p>Web Developer and Designer</p>
+                  <p>{{user.gender}}</p>
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-6">
-                  <label>Date of birth</label>
+                  <label>{{user.dob}}</label>
                 </div>
                 <div class="col-md-6">
                   <p>Kshiti Ghelani</p>
@@ -146,8 +142,13 @@
 </template>
 
 <script>
+import {mapState} from "vuex";
+
 export default {
   name: "ProfilePage",
+  computed: {
+    ...mapState("users", ["user"])
+  }
 };
 </script>
 
@@ -164,8 +165,8 @@ body{
   text-align: center;
 }
 .profile-img img{
-  width: 100%;
-  height: 100%;
+  width: 350px;
+  height: 300px;
 }
 .profile-img .file {
   position: relative;

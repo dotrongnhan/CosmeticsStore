@@ -24,7 +24,6 @@ func main() {
 	router := mux.NewRouter()
 
 
-	//router.Use(loggingMiddleware)
 	routes.Setup(router)
 	handler := cors.Default().Handler(router)
 
@@ -34,18 +33,4 @@ func main() {
 
 }
 
-func loggingMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Do stuff here
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-		w.Header().Set("Access-Control-Allow-Methods", "POST,OPTIONS")
 
-		if r.Method == http.MethodOptions {
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
-		// Call the next handler, which can be another middleware in the chain, or the final handler.
-		next.ServeHTTP(w, r)
-	})
-}
