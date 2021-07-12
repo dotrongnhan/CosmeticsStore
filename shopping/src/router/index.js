@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { BASE_URL } from "@/config";
 
 import Home from "@/pages/home/HomePage.vue";
 import Products from "@/pages/products/ProductsPage.vue";
@@ -39,7 +38,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(BASE_URL),
+  history: createWebHistory(),
   scrollBehavior() {
     return { top: 0 };
   },

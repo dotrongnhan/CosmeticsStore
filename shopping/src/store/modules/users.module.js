@@ -13,30 +13,27 @@ const getters = {};
 const actions = {
   async login({ commit }, user) {
     try {
-      const res = await axios.post("http://127.0.0.1:3000/api/user/login", user)
-      console.log(res)
-      commit("setUser", user);
+      const res = await axios.post("login", user)
+      const User = res.data.User
+      console.log( User)
+      document.cookie = "Bearer=" + res.data.Token;
+      localStorage.setItem("User", JSON.stringify(User) )
       commit("setLoginSuccess", true);
       commit("setLoginMessage", "");
+      commit("setUser", User );
     } catch (error) {
+      console.log(error)
       commit("setLoginSuccess", false);
-
-      const errorResponse = error.response;
-      if (errorResponse && errorResponse.status === 400) {
-        commit(
-          "setLoginMessage",
-          errorResponse.data?.message || "Login failed!"
-        );
-      } else {
-        commit("setLoginMessage", "Login failed!");
-      }
+      commit(
+          "setLoginMessage", "User name or password is wrong!"
+      );
     }
   },
 
   async register({ commit }, user) {
     try {
       const res = await axios.post('http://127.0.0.1:3000/api/user/register', user)
-      console.log(res.data)
+      console.log(res)
       commit("setRegisterSuccess", true);
       commit("setRegisterMessage", "");
     } catch (e) {
@@ -48,11 +45,16 @@ const actions = {
 };
 
 const mutations = {
+  updateUser(state, user) {
+    state.user = user
+    state.isLoginSuccess = true
+  },
   setUser(state, user) {
     state.user = user;
   },
 
   setLoginSuccess(state, status) {
+    console.log(status)
     state.isLoginSuccess = status;
   },
 

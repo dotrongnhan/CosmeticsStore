@@ -18,9 +18,11 @@ type ErrorResponse struct {
 	Err string
 }
 
-// var cookieHandler = securecookie.New(
-// 	securecookie.GenerateRandomKey(64),
-// 	securecookie.GenerateRandomKey(32))
+type ResLogin struct {
+	User	models.User
+	Result 	string
+	Token	string
+}
 
 func Register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -70,7 +72,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "New user was created")
 	json.NewEncoder(w).Encode(user)
 }
-
 func Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	body, err := ioutil.ReadAll(r.Body)
@@ -79,7 +80,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	var data map[string]string
 	json.Unmarshal(body, &data)
-	// json.Unmarshal(body, &user)
 	result, _ := database.DB.Query("SELECT full_name, email, password, phone, address, date_of_birth, gender, avatar, role_id FROM users WHERE email = ?", data["email"])
 	var user models.User
 	for result.Next() {
@@ -89,37 +89,29 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if data["email"] != user.Email {
-		fmt.Println(err)
-		err := ErrorResponse{
-			Err: "User not found",
-		}
-		json.NewEncoder(w).Encode(err)
+		http.Error(w, "User name or password is wrong", http.StatusBadRequest )
 		return
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data["password"])); err != nil {
-		fmt.Println(err)
-		err := ErrorResponse{
-			Err: "Wrong password",
-		}
-		json.NewEncoder(w).Encode(err)
+		http.Error(w, "User name or password is wrong", http.StatusBadRequest )
 		return
 	}
 	token, err := util.GenerateJwt(strconv.Itoa(int(user.RoleId)))
 	if err != nil {
 		panic(err.Error())
 	}
-	cookie := &http.Cookie{
-		Name:     "jwt",
-		Value:    token,
-		Expires:  time.Now().Add(time.Hour * 24),
-		HttpOnly: true,
-	}
-	w.Header().Set("JWT", token)
-	http.SetCookie(w, cookie)
-	parsedToken, _ := util.ParseJwt(token)
-	json.NewEncoder(w).Encode(parsedToken)
-	json.NewEncoder(w).Encode("Login successfully")
-	json.NewEncoder(w).Encode(user)
+	//cookie := &http.Cookie{
+	//	Name:     "jwt",
+	//	Value:    token,
+	//	Expires:  time.Now().Add(time.Hour * 24),
+	//	HttpOnly: true,
+	//}
+	//w.Header().Set("JWT", token)
+	//http.SetCookie(w, cookie)
+	//parsedToken, _ := util.ParseJwt(token)
+	//json.NewEncoder(w).Encode(parsedToken)
+	//json.NewEncoder(w).Encode("Login successfully")
+	json.NewEncoder(w).Encode(ResLogin{ Result: "Login successfully",User: user, Token: token})
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
