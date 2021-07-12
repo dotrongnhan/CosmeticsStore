@@ -100,17 +100,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err.Error())
 	}
-	//cookie := &http.Cookie{
-	//	Name:     "jwt",
-	//	Value:    token,
-	//	Expires:  time.Now().Add(time.Hour * 24),
-	//	HttpOnly: true,
-	//}
-	//w.Header().Set("JWT", token)
-	//http.SetCookie(w, cookie)
-	//parsedToken, _ := util.ParseJwt(token)
-	//json.NewEncoder(w).Encode(parsedToken)
-	//json.NewEncoder(w).Encode("Login successfully")
+	cookie := &http.Cookie{
+		Name:     "jwt",
+		Value:    token,
+		Path: 	  "/",
+		Expires:  time.Now().Add(time.Hour * 24),
+		HttpOnly: true,
+	}
+	http.SetCookie(w, cookie)
 	json.NewEncoder(w).Encode(ResLogin{ Result: "Login successfully",User: user, Token: token})
 }
 
@@ -118,6 +115,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	cookie := &http.Cookie{
 		Name:     "jwt",
 		Value:    "",
+		Path: 	  "/",
 		Expires:  time.Now().Add(-time.Hour),
 		HttpOnly: true,
 		MaxAge:   -1,

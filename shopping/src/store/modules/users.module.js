@@ -13,10 +13,8 @@ const getters = {};
 const actions = {
   async login({ commit }, user) {
     try {
-      const res = await axios.post("login", user)
+      const res = await axios.post("login", user, {withCredentials: true})
       const User = res.data.User
-      console.log( User)
-      document.cookie = "Bearer=" + res.data.Token;
       localStorage.setItem("User", JSON.stringify(User) )
       commit("setLoginSuccess", true);
       commit("setLoginMessage", "");
@@ -24,9 +22,7 @@ const actions = {
     } catch (error) {
       console.log(error)
       commit("setLoginSuccess", false);
-      commit(
-          "setLoginMessage", "User name or password is wrong!"
-      );
+      commit("setLoginMessage", "User name or password is wrong!");
     }
   },
 
@@ -72,6 +68,7 @@ const mutations = {
 
   logout(state) {
     state.user = {};
+    localStorage.removeItem("User")
     state.isLoginSuccess = false;
     state.isRegisterSuccess = false;
   },
