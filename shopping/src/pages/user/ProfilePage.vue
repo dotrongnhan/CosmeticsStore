@@ -46,10 +46,10 @@
               </div>
               <div class="row">
                 <div class="col-md-6">
-                  <label>{{user.dob}}</label>
+                  <label>Birthday</label>
                 </div>
                 <div class="col-md-6">
-                  <p>Kshiti Ghelani</p>
+                  <p>{{user.date_of_birth}}</p>
                 </div>
               </div>
               <div class="row">
@@ -57,7 +57,7 @@
                   <label>Email</label>
                 </div>
                 <div class="col-md-6">
-                  <p>Kshiti Ghelani</p>
+                  <p>{{user.email}}</p>
                 </div>
               </div>
               <div class="row">
@@ -65,7 +65,7 @@
                   <label>Address</label>
                 </div>
                 <div class="col-md-6">
-                  <p>kshitighelani@gmail.com</p>
+                  <p>{{user.address}}</p>
                 </div>
               </div>
               <div class="row">
@@ -73,7 +73,7 @@
                   <label>Phone</label>
                 </div>
                 <div class="col-md-6">
-                  <p>123 456 7890</p>
+                  <p>{{user.phone}}</p>
                 </div>
               </div>
               <div class="row">
@@ -81,7 +81,7 @@
                   <label>Password</label>
                 </div>
                 <div class="col-md-6">
-                  <p>123 456 7890</p>
+                  <p>********</p>
                 </div>
               </div>
 
@@ -245,6 +245,6 @@ body{
 }
 .profile-tab p{
   font-weight: 600;
-  color: #0062cc;
+  color: #62aa3c;
 }
 </style>
