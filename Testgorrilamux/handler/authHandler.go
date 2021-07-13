@@ -28,11 +28,11 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	stmt, err := database.DB.Prepare("INSERT INTO users(full_name, email, password, role_id) VALUES (?,?,?,?)")
 	if err != nil {
-		panic(err.Error())
+		err.Error()
 	}
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		panic(err.Error())
+		err.Error()
 	}
 	var data map[string]string
 	json.Unmarshal(body, &data)
@@ -62,7 +62,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		panic(err.Error())
+		err.Error()
 	}
 	var data map[string]string
 	json.Unmarshal(body, &data)
@@ -71,7 +71,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	for result.Next() {
 		err := result.Scan(&user.Id, &user.FullName, &user.Email, &user.Password, &user.Phone, &user.Address, &user.DateOfBirth, &user.Gender, &user.Avatar, &user.RoleId)
 		if err != nil {
-			panic(err.Error())
+			err.Error()
 		}
 	}
 	if data["email"] != user.Email {
@@ -84,7 +84,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	token, err := util.GenerateJwt(strconv.Itoa(int(user.RoleId)))
 	if err != nil {
-		panic(err.Error())
+		err.Error()
 	}
 
 	idToken, _ := util.GenerateJwt(strconv.Itoa(int(user.Id)))
@@ -115,14 +115,14 @@ func User(w http.ResponseWriter, r *http.Request) {
 	id, _ := util.ParseJwt(cookie.Value)
 	query, err := database.DB.Query("SELECT id, full_name, email, password, phone, address, date_of_birth, gender, avatar, role_id FROM users WHERE id = ?", id)
 	if err != nil {
-		panic(err.Error())
+		err.Error()
 	}
 	defer query.Close()
 	var user models.User
 	for query.Next() {
 		err := query.Scan(&user.Id, &user.FullName, &user.Email, &user.Password, &user.Phone, &user.Address, &user.DateOfBirth, &user.Gender, &user.Avatar, &user.RoleId)
 		if err != nil {
-			panic(err.Error())
+			err.Error()
 		}
 	}
 	json.NewEncoder(w).Encode(user)
@@ -134,12 +134,12 @@ func UserProfile(w http.ResponseWriter, r *http.Request) {
 	id, _ := util.ParseJwt(cookie.Value)
 	stmt, err := database.DB.Prepare("UPDATE users SET full_name =?, email = ?, password = ?, phone = ?, address = ?, date_of_birth = ?, gender = ?, avatar = ? WHERE id = ?;")
 	if err != nil {
-		panic(err.Error())
+		err.Error()
 	}
 	defer stmt.Close()
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		panic(err.Error())
+		err.Error()
 	}
 	var data map[string]string
 	json.Unmarshal(body, &data)
@@ -171,7 +171,7 @@ func UserProfile(w http.ResponseWriter, r *http.Request) {
 	}
 	_, err = stmt.Exec(user.FullName, user.Email, user.Password, user.Phone, user.Address, user.DateOfBirth, user.Gender, user.Avatar, id)
 	if err != nil {
-		panic(err.Error())
+		err.Error()
 	}
 	fmt.Fprintf(w, "User was updated")
 	json.NewEncoder(w).Encode(user)

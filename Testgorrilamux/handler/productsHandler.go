@@ -40,7 +40,7 @@ func CreateProduct(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		panic(err.Error())
+		err.Error()
 	}
 	var product models.Product
 	json.Unmarshal(body, &product)
@@ -82,7 +82,7 @@ func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(params["id"])
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		panic(err.Error())
+		err.Error()
 	}
 	var product models.Product
 	json.Unmarshal(body, &product)
