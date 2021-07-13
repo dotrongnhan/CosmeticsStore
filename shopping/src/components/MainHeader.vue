@@ -29,6 +29,7 @@
             <img
               :src="user?.avatar ? user.avatar : defaultAvatar"
               class="header-icon1"
+              style="width: 27px; border-radius: 50%"
               alt="Avatar"
             />
           </router-link>
@@ -115,7 +116,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import {mapMutations, mapState} from "vuex";
 import defaultAvatar from "@/assets/images/icons/icon-header-01.png";
 import MenuItem from "./MenuItem.vue";
 import HeaderCartDropdown from "./HeaderCartDropdown.vue";
@@ -137,10 +138,17 @@ export default {
       isShowMenuMobileDropdown: false,
     };
   },
+  created() {
+    console.log()
+    if (localStorage.getItem('User')) {
+      this.updateUser(JSON.parse(localStorage.getItem('User')))
+    }
+  },
 
   computed: mapState("users", ["isLoginSuccess", "user"]),
 
   methods: {
+    ...mapMutations("users", ["updateUser"]),
     toggleMenuMobileDropdown() {
       this.isShowMenuMobileDropdown = !this.isShowMenuMobileDropdown;
     },

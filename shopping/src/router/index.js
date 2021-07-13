@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { BASE_URL } from "@/config";
 
 import Home from "@/pages/home/HomePage.vue";
 import Products from "@/pages/products/ProductsPage.vue";
@@ -9,6 +8,8 @@ import Contact from "@/pages/contact/ContactPage.vue";
 import Cart from "@/pages/cart/CartPage.vue";
 import Login from "@/pages/login/LoginPage.vue";
 import Register from "@/pages/register/RegisterPage.vue";
+import Payment from "../pages/payment/Payment";
+import ConfirmCheckout from "../pages/confirm-checkout/ConfirmCheckout";
 
 const User = () => import("@/pages/user/UserPage.vue");
 const Profile = () => import("@/pages/user/ProfilePage.vue");
@@ -23,6 +24,8 @@ const routes = [
   { path: "/cart", component: Cart },
   { path: "/login", component: Login },
   { path: "/register", component: Register },
+  {path: "/payment", component: Payment},
+  {path: "/confirm-checkout", component: ConfirmCheckout},
   {
     path: "/user",
     component: User,
@@ -35,7 +38,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(BASE_URL),
+  history: createWebHistory(),
   scrollBehavior() {
     return { top: 0 };
   },

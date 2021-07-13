@@ -5,7 +5,7 @@
       class="bg-title-page p-t-40 p-b-50 flex-col-c-m"
       :style="{
         backgroundImage:
-          'url(' + 'https://www.thestyleinsider.co.nz/wp-content/uploads/2015/06/o-MAKEUP-facebook.jpg' + ')',
+          'url(' + require('@/assets/login-background.jpeg') + ')',
       }"
     >
       <h2 class="l-text2 t-center">Login</h2>
@@ -132,7 +132,6 @@ export default {
         password: this.user.password,
       }).then(() => {
         this.isLoading = false;
-
         if (this.isLoginSuccess) {
           this.$router.push("/");
         }
