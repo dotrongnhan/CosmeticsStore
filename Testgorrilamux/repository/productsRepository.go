@@ -32,6 +32,23 @@ func GetProducts(sortType string, prop string, limit int, offset int) (products 
 	return products
 }
 
+func SearchProducts(name string) (products []models.Product) {
+	query, err := database.DB.Query("SELECT P.*, C.category_name, B.brand_name FROM products P JOIN categories C ON C.id = P.category_id JOIN brands B ON B.id = P.brand_id WHERE P.product_name LIKE ?", "%"+name+"%")
+	if err != nil {
+		panic(err.Error())
+	}
+	defer query.Close()
+	for query.Next() {
+		var product models.Product
+		err := query.Scan(&product.Id, &product.ProductName, &product.Description, &product.Price, &product.Image, &product.IsHot, &product.CategoryId, &product.BrandId, &product.NumberAvailable, &product.CategoryName, &product.BrandName)
+		if err != nil {
+			panic(err.Error())
+		}
+		products = append(products, product)
+	}
+	return products
+}
+
 func GetProductByCategoryName(name string) (products []models.Product) {
 	query, err := database.DB.Query("SELECT P.*, C.category_name, B.brand_name FROM products P JOIN categories C ON C.id = P.category_id JOIN brands B ON B.id = P.brand_id WHERE C.category_name = ?", name)
 	if err != nil {

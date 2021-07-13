@@ -11,6 +11,7 @@ func Setup(router *mux.Router) {
 
 	//products
 	router.HandleFunc("/api/products", handler.GetProducts).Methods("GET")
+	router.HandleFunc("/api/products/search", handler.SearchProducts).Methods("GET")
 	router.HandleFunc("/api/products/{id}", handler.GetProduct).Methods("GET")
 	router.HandleFunc("/api/products/cate/{category_name}", handler.GetProductByCategoryName).Methods("GET")
 	router.HandleFunc("/api/products/brand/{brand_name}", handler.GetProductByBrandName).Methods("GET")
