@@ -116,7 +116,7 @@
 </template>
 
 <script>
-import {mapMutations, mapState} from "vuex";
+import {mapActions, mapMutations, mapState} from "vuex";
 import defaultAvatar from "@/assets/images/icons/icon-header-01.png";
 import MenuItem from "./MenuItem.vue";
 import HeaderCartDropdown from "./HeaderCartDropdown.vue";
@@ -141,6 +141,7 @@ export default {
   },
   created() {
     if (getCookie("jwt")) {
+      this.getUserExits()
     }
   },
 
@@ -148,6 +149,7 @@ export default {
 
   methods: {
     getCookie,
+    ...mapActions("users",["getUserExits"]),
     ...mapMutations("users", ["updateUser"]),
     toggleMenuMobileDropdown() {
       this.isShowMenuMobileDropdown = !this.isShowMenuMobileDropdown;

@@ -5,6 +5,7 @@ import (
 	"Testgorillamux/models"
 	"Testgorillamux/util"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -95,8 +96,16 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Expires:  time.Now().Add(time.Hour * 24),
 	}
 
-	w.Header().Set("JWT", token)
+	idCookie := &http.Cookie{
+		Name:     "userId",
+		Value:    idToken,
+		Path:     "/",
+		Expires:  time.Now().Add(time.Hour * 24),
+	}
+
 	http.SetCookie(w, cookie)
+	http.SetCookie(w, idCookie)
+	w.Header().Set("JWT", token)
 	json.NewEncoder(w).Encode(ResLogin{ Result: "Login successfully",User: user, Token: token})
 }
 
