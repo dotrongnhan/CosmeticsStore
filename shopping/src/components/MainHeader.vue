@@ -120,6 +120,7 @@ import {mapMutations, mapState} from "vuex";
 import defaultAvatar from "@/assets/images/icons/icon-header-01.png";
 import MenuItem from "./MenuItem.vue";
 import HeaderCartDropdown from "./HeaderCartDropdown.vue";
+import {getCookie} from "../utils/getCookieByName";
 
 export default {
   name: "MainHeader",
@@ -139,15 +140,14 @@ export default {
     };
   },
   created() {
-    console.log()
-    if (localStorage.getItem('User')) {
-      this.updateUser(JSON.parse(localStorage.getItem('User')))
+    if (getCookie("jwt")) {
     }
   },
 
   computed: mapState("users", ["isLoginSuccess", "user"]),
 
   methods: {
+    getCookie,
     ...mapMutations("users", ["updateUser"]),
     toggleMenuMobileDropdown() {
       this.isShowMenuMobileDropdown = !this.isShowMenuMobileDropdown;

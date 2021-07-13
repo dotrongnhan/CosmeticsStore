@@ -5,7 +5,6 @@ import (
 	"Testgorillamux/models"
 	"Testgorillamux/util"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -26,7 +25,7 @@ type ResLogin struct {
 
 func Register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	stmt, err := database.DB.Prepare("INSERT INTO users(full_name, email, password, phone, address, date_of_birth, gender, avatar, role_id) VALUES (?,?,?,?,?,?,?,?,?)")
+	stmt, err := database.DB.Prepare("INSERT INTO users(full_name, email, password, role_id) VALUES (?,?,?,?)")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -36,17 +35,8 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 	var data map[string]string
 	json.Unmarshal(body, &data)
-
-	if data["password"] != data["password_confirm"] {
-		err := ErrorResponse{
-			Err: "Password does not match",
-		}
-		json.NewEncoder(w).Encode(err)
-		return
-	}
 	pass, err := bcrypt.GenerateFromPassword([]byte(data["password"]), 14)
 	if err != nil {
-		fmt.Println(err)
 		err := ErrorResponse{
 			Err: "Password Encryption failed",
 		}
@@ -57,19 +47,13 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		FullName:    data["full_name"],
 		Email:       data["email"],
 		Password:    pass,
-		Phone:       data["phone"],
-		Address:     data["address"],
-		DateOfBirth: data["date_of_birth"],
-		Gender:      data["gender"],
-		Avatar:      data["avatar"],
 		RoleId:      uint(roleId),
 	}
-
-	_, err = stmt.Exec(user.FullName, user.Email, user.Password, user.Phone, user.Address, user.DateOfBirth, user.Gender, user.Avatar, user.RoleId)
+	_, err = stmt.Exec(user.FullName, user.Email, user.Password, user.RoleId)
 	if err != nil {
-		panic(err.Error())
+		http.Error(w, "Email is existed", http.StatusMethodNotAllowed )
+		return
 	}
-	fmt.Fprintf(w, "New user was created")
 	json.NewEncoder(w).Encode(user)
 }
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -105,7 +89,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Value:    token,
 		Path: 	  "/",
 		Expires:  time.Now().Add(time.Hour * 24),
-		HttpOnly: true,
 	}
 	http.SetCookie(w, cookie)
 	json.NewEncoder(w).Encode(ResLogin{ Result: "Login successfully",User: user, Token: token})

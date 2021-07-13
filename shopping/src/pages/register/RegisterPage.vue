@@ -5,7 +5,7 @@
       class="bg-title-page p-t-40 p-b-50 flex-col-c-m"
       :style="{
         backgroundImage:
-          'url(' + 'https://images.wallpaperscraft.com/image/brushes_cosmetics_set_114242_3840x2160.jpg' + ')',
+          'url(' + require('@/assets/background-register.jpeg') + ')',
       }"
     >
       <h2 class="l-text2 t-center">Register account</h2>
@@ -16,7 +16,7 @@
       <div class="container">
         <div class="register-form m-auto">
           <template v-if="!isRegisterSuccess">
-            <Form @submit.prevent="onSubmit" :validation-schema="schema">
+            <Form @submit="onSubmit" :validation-schema="schema">
               <p class="m-b-10 text-center text-danger">
                 {{ registerMessage }}
               </p>
@@ -131,11 +131,9 @@ export default {
 
   data() {
     const schema = yup.object().shape({
-      firstName: yup
+      full_name: yup
         .string()
-        .required("First Name is required!")
-        .min(3, "First Name must be at least 3 characters!")
-        .max(20, "First Name must be maximum 20 characters!"),
+        .required("Your name is required!"),
       email: yup
         .string()
         .required("Email is required!")
@@ -179,6 +177,7 @@ export default {
   methods: {
     onSubmit() {
       this.$store.dispatch("users/register", {
+        full_name: this.user.full_name,
         email: this.user.email,
         password: this.user.password,
       });
