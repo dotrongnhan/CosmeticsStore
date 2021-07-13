@@ -91,7 +91,7 @@ export default {
               <li>
                 <router-link to="/user/profile">Profile</router-link>
               </li>
-              <li>
+              <li v-if="user.role_id === 1">
                 <router-link to="/user/settings">Settings</router-link>
               </li>
               <li>
@@ -118,15 +118,6 @@ export default {
   computed: {
     ...mapState("users", ["isLoginSuccess", "user"]),
 },
-  // mounted() {
-  //   console.log(this.$router.currentRoute._value.fullPath.split("/")[2])
-  // },
-  // created() {
-  //   if (!this.isLoginSuccess) {
-  //     this.$router.replace("/");
-  //   }
-  // },
-
   methods: {
     logout(event) {
       event.preventDefault();
