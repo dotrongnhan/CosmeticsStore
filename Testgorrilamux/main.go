@@ -2,13 +2,13 @@ package main
 
 import (
 	"Testgorillamux/database"
+	"Testgorillamux/routes"
 	"fmt"
 	"log"
 
-	"Testgorillamux/routes"
-
 	"net/http"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -23,16 +23,18 @@ func main() {
 
 	router := mux.NewRouter()
 
-	// cors := handlers.CORS(
-	// 	handlers.AllowedHeaders([]string{"Content-Type", "JWT", "Set-Cookie"}),
-	// 	handlers.AllowedOrigins([]string{"*"}),
-	// 	handlers.AllowCredentials(),
-	// )
-	// router.Use(cors)
+	handleCross := handlers.CORS(
+		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"}),
+		handlers.AllowedOrigins([]string{"http://localhost:8080"}),
+		handlers.AllowCredentials(),
+	)
 
 	routes.Setup(router)
+	// handler := cors.Default().Handler(router)
+
 	fmt.Println("Server running at localhost:8000")
 
-	http.ListenAndServe(":8000", router)
+	http.ListenAndServe(":8000", handleCross(router))
 
 }
