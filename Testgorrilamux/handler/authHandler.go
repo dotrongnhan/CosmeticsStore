@@ -128,6 +128,55 @@ func User(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
+func UserProfile(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	cookie, _ := r.Cookie("userId")
+	id, _ := util.ParseJwt(cookie.Value)
+	stmt, err := database.DB.Prepare("UPDATE users SET full_name =?, email = ?, password = ?, phone = ?, address = ?, date_of_birth = ?, gender = ?, avatar = ? WHERE id = ?;")
+	if err != nil {
+		panic(err.Error())
+	}
+	defer stmt.Close()
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err.Error())
+	}
+	var data map[string]string
+	json.Unmarshal(body, &data)
+
+	if data["password"] != data["password_confirm"] {
+		err := ErrorResponse{
+			Err: "Password does not match",
+		}
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+	pass, err := bcrypt.GenerateFromPassword([]byte(data["password"]), 14)
+	if err != nil {
+		fmt.Println(err)
+		err := ErrorResponse{
+			Err: "Password Encryption failed",
+		}
+		json.NewEncoder(w).Encode(err)
+	}
+	user := models.User{
+		FullName:    data["full_name"],
+		Email:       data["email"],
+		Password:    pass,
+		Phone:       data["phone"],
+		Address:     data["address"],
+		DateOfBirth: data["date_of_birth"],
+		Gender:      data["gender"],
+		Avatar:      data["avatar"],
+	}
+	_, err = stmt.Exec(user.FullName, user.Email, user.Password, user.Phone, user.Address, user.DateOfBirth, user.Gender, user.Avatar, id)
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Fprintf(w, "User was updated")
+	json.NewEncoder(w).Encode(user)
+}
+
 func Logout(w http.ResponseWriter, r *http.Request) {
 	cookie := &http.Cookie{
 		Name:     "jwt",
