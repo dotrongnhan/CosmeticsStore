@@ -18,9 +18,9 @@ type ErrorResponse struct {
 }
 
 type ResLogin struct {
-	User	models.User
-	Result 	string
-	Token	string
+	User   models.User
+	Result string
+	Token  string
 }
 
 func Register(w http.ResponseWriter, r *http.Request) {
@@ -54,6 +54,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Email is existed", http.StatusMethodNotAllowed )
 		return
 	}
+	fmt.Fprintf(w, "New user was created")
 	json.NewEncoder(w).Encode(user)
 }
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -64,45 +65,78 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	var data map[string]string
 	json.Unmarshal(body, &data)
-	result, _ := database.DB.Query("SELECT full_name, email, password, phone, address, date_of_birth, gender, avatar, role_id FROM users WHERE email = ?", data["email"])
+	result, _ := database.DB.Query("SELECT id, full_name, email, password, phone, address, date_of_birth, gender, avatar, role_id FROM users WHERE email = ?", data["email"])
 	var user models.User
 	for result.Next() {
-		err := result.Scan(&user.FullName, &user.Email, &user.Password, &user.Phone, &user.Address, &user.DateOfBirth, &user.Gender, &user.Avatar, &user.RoleId)
+		err := result.Scan(&user.Id, &user.FullName, &user.Email, &user.Password, &user.Phone, &user.Address, &user.DateOfBirth, &user.Gender, &user.Avatar, &user.RoleId)
 		if err != nil {
 			panic(err.Error())
 		}
 	}
 	if data["email"] != user.Email {
-		http.Error(w, "User name or password is wrong", http.StatusBadRequest )
+		http.Error(w, "User name or password is wrong", http.StatusBadRequest)
 		return
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data["password"])); err != nil {
-		http.Error(w, "User name or password is wrong", http.StatusBadRequest )
+		http.Error(w, "User name or password is wrong", http.StatusBadRequest)
 		return
 	}
 	token, err := util.GenerateJwt(strconv.Itoa(int(user.RoleId)))
 	if err != nil {
 		panic(err.Error())
 	}
+
+	idToken, _ := util.GenerateJwt(strconv.Itoa(int(user.Id)))
+
 	cookie := &http.Cookie{
 		Name:     "jwt",
 		Value:    token,
 		Path: 	  "/",
 		Expires:  time.Now().Add(time.Hour * 24),
 	}
+
+	w.Header().Set("JWT", token)
 	http.SetCookie(w, cookie)
 	json.NewEncoder(w).Encode(ResLogin{ Result: "Login successfully",User: user, Token: token})
+}
+
+func User(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	cookie, _ := r.Cookie("userId")
+	id, _ := util.ParseJwt(cookie.Value)
+	query, err := database.DB.Query("SELECT id, full_name, email, password, phone, address, date_of_birth, gender, avatar, role_id FROM users WHERE id = ?", id)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer query.Close()
+	var user models.User
+	for query.Next() {
+		err := query.Scan(&user.Id, &user.FullName, &user.Email, &user.Password, &user.Phone, &user.Address, &user.DateOfBirth, &user.Gender, &user.Avatar, &user.RoleId)
+		if err != nil {
+			panic(err.Error())
+		}
+	}
+	json.NewEncoder(w).Encode(user)
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
 	cookie := &http.Cookie{
 		Name:     "jwt",
 		Value:    "",
-		Path: 	  "/",
+		Path:     "/",
+		Expires:  time.Now().Add(-time.Hour),
+		HttpOnly: true,
+		MaxAge:   -1,
+	}
+	idCookie := &http.Cookie{
+		Name:     "userId",
+		Value:    "",
+		Path:     "/",
 		Expires:  time.Now().Add(-time.Hour),
 		HttpOnly: true,
 		MaxAge:   -1,
 	}
 	http.SetCookie(w, cookie)
+	http.SetCookie(w, idCookie)
 	json.NewEncoder(w).Encode("Success")
 }

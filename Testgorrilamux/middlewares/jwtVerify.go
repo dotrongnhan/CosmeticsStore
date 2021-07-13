@@ -25,3 +25,15 @@ func JwtVerify(next http.HandlerFunc) http.HandlerFunc {
 		next.ServeHTTP(w, r)
 	})
 }
+
+func LoginVerify(next http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		idCookie, _ := r.Cookie("userId")
+		if idCookie == nil {
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode("Missing auth token")
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
