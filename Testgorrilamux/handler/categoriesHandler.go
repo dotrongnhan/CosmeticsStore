@@ -23,7 +23,7 @@ func CreateCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		panic(err.Error())
+		err.Error()
 	}
 	var category models.Category
 	json.Unmarshal(body, &category)
@@ -49,7 +49,7 @@ func UpdateCategory(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(params["id"])
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		panic(err.Error())
+		err.Error()
 	}
 	var category models.Category
 	json.Unmarshal(body, &category)

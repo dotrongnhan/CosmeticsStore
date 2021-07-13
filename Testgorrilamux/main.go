@@ -32,7 +32,6 @@ func main() {
 	)
 
 	routes.Setup(router)
-
 	fmt.Println("Server running at localhost:8000")
 
 	http.ListenAndServe(":8000", handleCross(router))
