@@ -14,7 +14,7 @@ const getters = {};
 const actions = {
   async getUserExits({commit}) {
     try {
-      const res = await axios.get("user")
+      const res = await axios.get("user", {withCredentials: true})
       commit("setLoginSuccess", true);
       commit("setUser", res.data );
     } catch (e) {
@@ -24,7 +24,7 @@ const actions = {
   ,
   async login({ commit }, user) {
     try {
-      const res = await axios.post("login", user)
+      const res = await axios.post("login", user, {withCredentials: true})
       commit("setLoginSuccess", true);
       commit("setLoginMessage", "");
       commit("setUser", res.data.User );
@@ -37,15 +37,15 @@ const actions = {
     }
   },
   async logout({ commit}){
-    await axios.post("logout");
+    await axios.post("logout","hello", {withCredentials: true});
     await commit("logout")
     
 },
 
   async register({ commit }, user) {
     try {
-      const res = await axios.post('http://127.0.0.1:3000/api/user/register', user)
-      console.log(res)
+      const res = await axios.post('register', user)
+      console.log("register success" + res)
       commit("setRegisterSuccess", true);
       commit("setRegisterMessage", "");
     } catch (e) {
