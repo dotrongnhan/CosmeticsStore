@@ -14,7 +14,7 @@ const getters = {};
 const actions = {
   async getUserExits({commit}) {
     try {
-      const res = await axios.get("user", {withCredentials: true})
+      const res = await axios.get("user")
       commit("setLoginSuccess", true);
       commit("setUser", res.data );
     } catch (e) {
@@ -24,7 +24,7 @@ const actions = {
   ,
   async login({ commit }, user) {
     try {
-      const res = await axios.post("login", user, {withCredentials: true})
+      const res = await axios.post("login", user)
       commit("setLoginSuccess", true);
       commit("setLoginMessage", "");
       commit("setUser", res.data.User );
@@ -37,7 +37,7 @@ const actions = {
     }
   },
   async logout({ commit}){
-    await axios.post("logout","helo", {withCredentials: true});
+    await axios.post("logout");
     await commit("logout")
     
 },
@@ -50,7 +50,7 @@ const actions = {
       commit("setRegisterMessage", "");
     } catch (e) {
       console.log(e)
-      commit("setRegisterMessage", e.message === "Request failed with status code 400" ? "Email already in use" : "");
+      commit("setRegisterMessage", e.message === "Request failed with status code 400" ? "Email already in use" : "Create new account is failed");
       commit("setRegisterSuccess", false);
     }
   },

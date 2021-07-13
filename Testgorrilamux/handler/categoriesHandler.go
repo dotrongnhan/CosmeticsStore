@@ -14,7 +14,6 @@ import (
 
 func GetCategories(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	// var Categorys []models.Category
 	result := repository.GetCategories()
 	json.NewEncoder(w).Encode(result)
 }

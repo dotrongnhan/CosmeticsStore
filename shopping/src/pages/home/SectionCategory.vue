@@ -14,12 +14,10 @@
             </div>
           </div>
 
-          <!-- block1 -->
           <div class="block1 hov-img-zoom pos-relative m-b-30">
             <img src="https://cdn.chanhtuoi.com/viectainha/2021/02/w800/w400/serum-duong-da-cang-bong-silk.jpg.webp" alt="IMG-BENNER" />
 
             <div @click="summitCategory(6)" class="block1-wrapbtn w-size2">
-              <!-- Button -->
               <router-link to="/products"  class="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
                 SERUM
               </router-link>
@@ -33,14 +31,12 @@
             <img src="https://baamboo.com/wp-content/uploads/2020/06/nuoc-hoa-hong-thayers-7.jpg" alt="IMG-BENNER" />
 
             <div @click="summitCategory(4)" class="block1-wrapbtn w-size2">
-              <!-- Button -->
               <router-link to="/products"  class="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
                 TONER
               </router-link>
             </div>
           </div>
 
-          <!-- block1 -->
           <div class="block1 hov-img-zoom pos-relative m-b-30">
             <img src="https://cf.shopee.vn/file/9eff84beecee212da4c9433e5cca3004" alt="IMG-BENNER" />
 
@@ -66,7 +62,7 @@
           </div>
 
           <!-- block2 -->
-          <div class="block2 wrap-pic-w pos-relative m-b-30">
+          <div class="block2 hov-img-zoom wrap-pic-w pos-relative m-b-30">
             <img src="https://classbento.com.au/images/class/natural-skincare-making-private-class-600.jpg?1589939169" alt="IMG" />
 
             <div class="block2-content sizefull ab-t-l flex-col-c-m">
@@ -79,12 +75,18 @@
                 exclu-sive offers
               </p>
 
-              <div class="w-size2 p-t-25">
+              <div v-if="!isLoginSuccess" class="w-size2 p-t-25">
                 <router-link
                     to="/login"
                   class="flex-c-m size2 bg4 bo-rad-23 hov1 m-text3 trans-0-4"
                 >
                   Sign Up
+                </router-link>
+              </div>
+              <div v-else  @click="summitCategory(3)" class="block1-wrapbtn w-size2">
+                <!-- Button -->
+                <router-link to="/products"  class="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
+                  Sale
                 </router-link>
               </div>
             </div>
@@ -98,12 +100,17 @@
 <script>
 
 
+import {mapState} from "vuex";
+
 export default {
   name: "SectionCategory",
   methods: {
     summitCategory (category) {
           this.$store.dispatch("products/getProductByCategory", category)
     }
+  },
+  computed: {
+    ...mapState("users", ["isLoginSuccess"])
   }
 };
 </script>
