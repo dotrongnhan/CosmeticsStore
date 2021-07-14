@@ -3188,6 +3188,7 @@ TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT TEXT
 }
 
 .m-text2 {
+    text-decoration: none;
 	font-family: Montserrat-Regular;
 	font-size: 16px;
 	color: #333333;

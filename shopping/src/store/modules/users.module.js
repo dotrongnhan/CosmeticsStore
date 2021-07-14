@@ -37,20 +37,20 @@ const actions = {
     }
   },
   async logout({ commit}){
-    await axios.post("logout","helo", {withCredentials: true});
+    await axios.post("logout","hello", {withCredentials: true});
     await commit("logout")
     
 },
 
   async register({ commit }, user) {
     try {
-      const res = await axios.post('http://127.0.0.1:3000/api/user/register', user)
-      console.log(res)
+      const res = await axios.post('register', user)
+      console.log("register success" + res)
       commit("setRegisterSuccess", true);
       commit("setRegisterMessage", "");
     } catch (e) {
       console.log(e)
-      commit("setRegisterMessage", e.message === "Request failed with status code 400" ? "Email already in use" : "");
+      commit("setRegisterMessage", e.message === "Request failed with status code 400" ? "Email already in use" : "Create new account is failed");
       commit("setRegisterSuccess", false);
     }
   },

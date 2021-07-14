@@ -1,38 +1,23 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import Home from "@/pages/home/HomePage.vue";
-import Products from "@/pages/products/ProductsPage.vue";
-import ProductDetail from "@/pages/product-detail/ProductDetailPage.vue";
-import About from "@/pages/about/AboutPage.vue";
-import Contact from "@/pages/contact/ContactPage.vue";
-import Cart from "@/pages/cart/CartPage.vue";
-import Login from "@/pages/login/LoginPage.vue";
-import Register from "@/pages/register/RegisterPage.vue";
-import Payment from "../pages/payment/Payment";
-import ConfirmCheckout from "../pages/confirm-checkout/ConfirmCheckout";
-
-const User = () => import("@/pages/user/UserPage.vue");
-const Profile = () => import("@/pages/user/ProfilePage.vue");
-const Settings = () => import("@/pages/user/SettingsPage.vue");
-
 const routes = [
-  { path: "/", component: Home },
-  { path: "/products", component: Products },
-  { path: "/products/:id", component: ProductDetail },
-  { path: "/about", component: About },
-  { path: "/contact", component: Contact },
-  { path: "/cart", component: Cart },
-  { path: "/login", component: Login },
-  { path: "/register", component: Register },
-  {path: "/payment", component: Payment},
-  {path: "/confirm-checkout", component: ConfirmCheckout},
+  { path: "/", component: () => require("../pages/home/HomePage") },
+  { path: "/products", component: () => require("../pages/products/ProductsPage") },
+  { path: "/products/:id", component: () => require("../pages/product-detail/ProductDetailPage") },
+  { path: "/about", component: () => require("../pages/about/AboutPage") },
+  { path: "/contact", component: () => require("../pages/contact/ContactPage") },
+  { path: "/cart", component: () => require("../pages/cart/CartPage") },
+  { path: "/login", component: () => require("../pages/login/LoginPage") },
+  { path: "/register", component: () => require("../pages/register/RegisterPage") },
+  {path: "/payment", component: () => require("../pages/payment/Payment")},
+  {path: "/confirm-checkout", component: () => require("../pages/confirm-checkout/ConfirmCheckout")},
   {
     path: "/user",
-    component: User,
+    component: () => require("../pages/user/UserPage"),
     children: [
-      { path: "", component: Profile },
-      { path: "profile", component: Profile },
-      { path: "settings", component: Settings },
+      { path: "", component: () => require("../pages/user/ProfilePage") },
+      { path: "profile", component: () => require("../pages/user/ProfilePage") },
+      { path: "settings", component: () => require("../pages/user/SettingsPage") },
     ],
   },
 ];

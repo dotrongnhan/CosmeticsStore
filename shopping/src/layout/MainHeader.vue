@@ -118,8 +118,8 @@
 <script>
 import {mapActions, mapMutations, mapState} from "vuex";
 import defaultAvatar from "@/assets/images/icons/icon-header-01.png";
-import MenuItem from "./MenuItem.vue";
-import HeaderCartDropdown from "./HeaderCartDropdown.vue";
+import MenuItem from "../components/MenuItem.vue";
+import HeaderCartDropdown from "../components/HeaderCartDropdown.vue";
 import {getCookie} from "../utils/getCookieByName";
 
 export default {
