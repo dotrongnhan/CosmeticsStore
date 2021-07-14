@@ -25,14 +25,15 @@
 
         <!-- Header Icon -->
         <div class="header-icons">
-          <router-link :to="isLoginSuccess ? '/user' : '/login'">
+          <!-- <router-link :to="isLoginSuccess ? '/user' : '/login'">
             <img
               :src="user?.avatar ? user.avatar : defaultAvatar"
               class="header-icon1"
               style="width: 27px; border-radius: 50%"
               alt="Avatar"
             />
-          </router-link>
+          </router-link> -->
+          <HeaderUserDropdown />
 
           <span class="linedivide1"></span>
 
@@ -120,6 +121,7 @@ import {mapActions, mapMutations, mapState} from "vuex";
 import defaultAvatar from "@/assets/images/icons/icon-header-01.png";
 import MenuItem from "../components/MenuItem.vue";
 import HeaderCartDropdown from "../components/HeaderCartDropdown.vue";
+import HeaderUserDropdown from "../components/HeaderUserDropdown.vue";
 import {getCookie} from "../utils/getCookieByName";
 
 export default {
@@ -128,6 +130,7 @@ export default {
   components: {
     MenuItem,
     HeaderCartDropdown,
+    HeaderUserDropdown
   },
 
   data() {
