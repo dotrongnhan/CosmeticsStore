@@ -48,7 +48,7 @@
                 </div>
               </div>
               <Pagination
-                  :length="products.length"
+                  :length="count"
                   :pageSize="limit"
                   :pageIndex="pageIndex"
                   @change="changePage"
@@ -60,7 +60,7 @@
                 <div class="row">
                   <div
                     class="col-sm-12 col-md-6 col-lg-3 p-b-50"
-                    v-for="product in listProduct"
+                    v-for="product in products"
                     :key="product.id"
                   >
                     <div class="block2">
@@ -145,13 +145,12 @@ export default {
       value: {},
       direction: {},
       pageIndex: 1,
-      limit: 8,
+      limit: 16,
     }
   },
 
   created() {
     this.$store.dispatch("products/getProducts", {});
-    console.log(this.$store.state.products.category)
   },
   methods: {
     currency,
@@ -169,14 +168,11 @@ export default {
     },
     changePage(value) {
       this.pageIndex = value
+      this.$store.dispatch("products/getProducts", {offset: value});
     }
   },
   computed: {
-    ...mapState("products", ["products"]),
-    listProduct() {
-      const index = this.limit * (this.pageIndex - 1)
-      return this.products.slice(index, index + this.limit)
-    },
+    ...mapState("products", ["products", "count"]),
     currentCategory() {
       return this.$store.state.products.category
     }

@@ -12,16 +12,22 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type resProduct struct {
+	Products	[]models.Product
+	Count		int
+}
+
 func GetProducts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	// var products []models.Product
+	limit := 16
 	params := r.URL.Query()
 	sortType := params.Get("sortType")
 	prop := params.Get("prop")
-	limit, _ := strconv.Atoi(params.Get("limit"))
+	//limit, _ := strconv.Atoi(params.Get("limit"))
 	offset, _ := strconv.Atoi(params.Get("offset"))
-	result := repository.GetProducts(sortType, prop, limit, offset)
-	json.NewEncoder(w).Encode(result)
+	result, count := repository.GetProducts(sortType, prop, limit, offset)
+	json.NewEncoder(w).Encode(resProduct{result, count})
 }
 
 func SearchProducts(w http.ResponseWriter, r *http.Request) {
