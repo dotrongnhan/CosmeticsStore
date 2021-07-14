@@ -16,7 +16,7 @@ const getters = {
 };
 
 const actions = {
-  getProducts: async ({commit}, {sortType, prop, offset}) => {
+  getProducts: async ({commit}, {sortType, prop, offset = 1}) => {
     console.log(sortType, prop, offset)
     try {
       const res = await axios.get(`products?sortType=${sortType}&prop=${prop}&offset=${offset}`, )

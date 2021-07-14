@@ -143,6 +143,7 @@ export default {
     };
   },
   created() {
+    this.getProducts()
     if (getCookie("jwt")) {
       this.getUserExits()
     }
@@ -153,6 +154,7 @@ export default {
   methods: {
     getCookie,
     ...mapActions("users",["getUserExits"]),
+    ...mapActions("products", ["getProducts"]),
     ...mapMutations("users", ["updateUser"]),
     toggleMenuMobileDropdown() {
       this.isShowMenuMobileDropdown = !this.isShowMenuMobileDropdown;

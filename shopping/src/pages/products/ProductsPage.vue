@@ -155,7 +155,6 @@ export default {
   methods: {
     currency,
     sort(direction) {
-      console.log(direction)
       this.$store.dispatch("products/getProducts", {sortType: direction.value[0],prop: direction.value[1], offset: this.pageIndex})
       this.direction = direction
     },
