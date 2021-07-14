@@ -24,8 +24,8 @@
                   <Select2
                     :options="[
                       { value: '', label: 'Default Sorting' },
-                      { value: -1, label: 'Price: low to high' },
-                      { value: 1, label: 'Price: high to low' },
+                      { value: ['ASC','price'], label: 'Price: low to high' },
+                      { value: ['DESC','price'], label: 'Price: high to low' },
                     ]"
                     @change="sort"
                     :value="direction"
@@ -67,7 +67,7 @@
                       <div
                         class="block2-img wrap-pic-w of-hidden pos-relative"
                       >
-                        <img :src="product.image" alt="IMG-PRODUCT" />
+                        <img style="height: 306px" :src="product.image" alt="IMG-PRODUCT" />
 
                         <div class="block2-overlay trans-0-4">
                           <a
@@ -150,12 +150,13 @@ export default {
   },
 
   created() {
-    this.$store.dispatch("products/getProducts", {});
+    this.$store.dispatch("products/getProducts");
   },
   methods: {
     currency,
     sort(direction) {
-      this.$store.commit("products/SORT_PRODUCT", direction.value)
+      console.log(direction)
+      this.$store.dispatch("products/getProducts", {sortType: direction.value[0],prop: direction.value[1], offset: this.pageIndex})
       this.direction = direction
     },
     category(value) {
@@ -168,7 +169,8 @@ export default {
     },
     changePage(value) {
       this.pageIndex = value
-      this.$store.dispatch("products/getProducts", {offset: value});
+      console.log(this.direction)
+      this.$store.dispatch("products/getProducts", {sortType: this.direction.value[0] ,prop: this.direction.value[1],offset: value});
     }
   },
   computed: {
