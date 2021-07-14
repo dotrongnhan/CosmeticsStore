@@ -7,6 +7,7 @@ const state = () => ({
   loginMessage: "",
   isRegisterSuccess: false,
   registerMessage: "",
+  isShowUserDropdown: false,
 });
 
 const getters = {};
@@ -57,6 +58,9 @@ const actions = {
 };
 
 const mutations = {
+  setShowUserDropdown(state, status) {
+    state.isShowUserDropdown = status;
+  },
   setUser(state, user) {
     state.user = user;
   },
