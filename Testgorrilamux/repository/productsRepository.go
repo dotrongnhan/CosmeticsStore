@@ -8,6 +8,7 @@ import (
 
 func GetProducts(sortType string, prop string, limit int, offset int) (products []models.Product, countProducts int) {
 	offsetValue := offset * (limit - 1)
+	fmt.Println(sortType,prop,offset)
 	query, err := database.DB.Query("")
 	count, err := database.DB.Query("")
 	if sortType == "ASC" && prop == "name" {
