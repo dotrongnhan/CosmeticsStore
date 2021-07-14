@@ -17,7 +17,7 @@ const getters = {
 const actions = {
   getProducts: async ({commit}) => {
     try {
-      const res = await axios.get("http://127.0.0.1:3000/api/product")
+      const res = await axios.get("products")
       commit("GET_PRODUCTS", res.data)
     } catch (e) {
       console.log(e)
@@ -25,7 +25,8 @@ const actions = {
   },
   getProductById: async ({commit}, id) => {
     try {
-      const res = await axios.get(`http://127.0.0.1:3000/api/product/${id}`)
+      const res = await axios.get(`products/${id}`)
+      console.log(res.data)
       commit("GET_PRODUCTS_BY_ID", res.data)
     } catch (e) {
       console.log(e)

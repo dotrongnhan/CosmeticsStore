@@ -16,6 +16,9 @@ func GetProducts(sortType string, prop string, limit int, offset int) (products 
 		query, err = database.DB.Query("SELECT P.*, C.category_name, B.brand_name FROM products P JOIN categories C ON C.id = P.category_id JOIN brands B ON B.id = P.brand_id ORDER BY P.price ASC LIMIT ? OFFSET ?", limit, offset)
 	} else if sortType == "DESC" && prop == "price" {
 		query, err = database.DB.Query("SELECT P.*, C.category_name, B.brand_name FROM products P JOIN categories C ON C.id = P.category_id JOIN brands B ON B.id = P.brand_id ORDER BY P.price DESC LIMIT ? OFFSET ?", limit, offset)
+	} else {
+		query, err = database.DB.Query("SELECT P.*, C.category_name, B.brand_name FROM products P JOIN categories C ON C.id = P.category_id JOIN brands B ON B.id = P.brand_id LIMIT ? OFFSET ?", 20, 1)
+
 	}
 	if err != nil {
 		err.Error()
