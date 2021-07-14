@@ -21,13 +21,12 @@
           </div>
         </div>
         <div class="col-md-2">
-          <input type="submit" class="profile-edit-btn" name="btnAddMore" value="Edit Profile"/>
         </div>
       </div>
-      <div class="row">
+      <div class="row" id="profile">
         <div class="col-md-8">
           <div class="tab-content profile-tab" id="myTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <!-- <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
               <div class="row">
                 <div class="col-md-6">
                   <label>Full name</label>
@@ -76,17 +75,9 @@
                   <p>{{user.phone}}</p>
                 </div>
               </div>
-              <!-- <div class="row">
-                <div class="col-md-6">
-                  <label>Password</label>
-                </div>
-                <div class="col-md-6">
-                  <p>123 456 7890</p>
-                </div>
-              </div> -->
+            </div> -->
 
-            </div>
-            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <!-- <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
               <div class="row">
                 <div class="col-md-6">
                   <label>Experience</label>
@@ -133,7 +124,108 @@
                   <p>Your detail description</p>
                 </div>
               </div>
-            </div>
+            </div> -->
+          
+            <Form @submit="onSubmit" :validation-schema="schema" style="margin-left: 390px; margin-top: -100px; width : 74%;">
+                <div>
+                <button
+                    style = "width: 30%; margin-left: 390px"
+                    @click="onSubmit"
+                    class="flex-c-m size2 bg1 bo-rad-23 hov1 m-text3 trans-0-4 m-t-20"
+                  :class="{ disabled: isLoading }"
+                  :disabled="isLoading"
+                >
+                  <span v-show="isLoading" data-loader="ball-scale"></span>
+                  Edit Profile
+                </button>
+              </div>
+                  <div class="col-md-6">
+                    <label>Full name</label>
+                  </div>
+              <div class="bo4 of-hidden size15 m-b-10">
+                <Field
+                    v-model="user.full_name"
+                  name="full_name"
+                  type="text"
+                  placeholder="Your Name"
+                  class="sizefull s-text7 p-l-22 p-r-22"
+                  :disabled="isLoading"
+                />
+              </div>
+
+              <ErrorMessage
+                name="full_name"
+                class="text-danger m-b-20 d-block"
+              />
+                  <div class="col-md-6">
+                    <label>Email</label>
+                  </div>
+              <div class="bo4 of-hidden size15 m-b-10">
+                <Field
+                    v-model="user.email"
+                  name="email"
+                  type="email"
+                  placeholder="Password"
+                  class="sizefull s-text7 p-l-22 p-r-22"
+                  :disabled="isLoading"
+                />
+              </div>
+
+              <ErrorMessage name="" class="text-danger m-b-20 d-block" />
+                  <div class="col-md-6">
+                    <label>Gender</label>
+                  </div>
+              <div class="bo4 of-hidden size15 m-b-10">
+                <Field
+                    v-model="user.gender"
+                  name="gender"
+                  type="text"
+                  placeholder="Password"
+                  class="sizefull s-text7 p-l-22 p-r-22"
+                  :disabled="isLoading"
+                />
+              </div>
+
+              <ErrorMessage name="" class="text-danger m-b-20 d-block" />
+                  <div class="col-md-6">
+                    <label>Address</label>
+                  </div>
+              <div class="bo4 of-hidden size15 m-b-10">
+                <Field
+                  v-model="user.address"
+                  name="address"
+                  type="text"
+                  placeholder="Confirm Password"
+                  class="sizefull s-text7 p-l-22 p-r-22"
+                  :disabled="isLoading"
+                />
+              </div>
+
+              <ErrorMessage
+                name="confirm_password"
+                class="text-danger m-b-20 d-block"
+              />
+                  <div class="col-md-6">
+                    <label>Phone</label>
+                  </div>
+              <div class="bo4 of-hidden size15 m-b-10">
+                <Field
+                  v-model="user.phone"
+                  name="phone"
+                  type="text"
+                  placeholder="Confirm Password"
+                  class="sizefull s-text7 p-l-22 p-r-22"
+                  :disabled="isLoading"
+                />
+              </div>
+
+              <ErrorMessage
+                name="confirm_password"
+                class="text-danger m-b-20 d-block"
+              />
+            </Form>
+          
+          
           </div>
         </div>
       </div>
@@ -143,11 +235,52 @@
 
 <script>
 import {mapState} from "vuex";
+import {Form, Field, ErrorMessage} from "vee-validate";
+import * as yup from "yup";
+import * as Yup from "yup";
 
 export default {
   name: "ProfilePage",
+  components: {
+    Form,
+    Field,
+    ErrorMessage,
+  },
+  data() {
+    const schema = yup.object().shape({
+      full_name: yup
+        .string()
+        .required("Your name is required!"),
+      email: yup
+        .string()
+        .required("Email is required!")
+        .email("Email is invalid!")
+        .max(50, "Email must be maximum 50 characters!"),
+      password: yup
+        .string()
+        .required("Password is required!")
+        .min(6, "Password must be at least 6 characters!")
+        .max(40, "Password must be maximum 40 characters!"),
+      confirm_password: yup
+      .string()
+      .oneOf([Yup.ref('password'), null], 'Passwords must match')
+    });
+
+    return {
+      isLoading: false,
+      message: "",
+      schema,
+      userr: {
+        full_name: '',
+        email: '',
+        password: ''
+      }
+    };
+  },
   computed: {
     ...mapState("users", ["user"])
+  },
+  methods: {
   }
 };
 </script>
@@ -155,6 +288,9 @@ export default {
 <style scoped>
 body{
   background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+}
+.bo4 {
+  border : none;
 }
 .emp-profile{
   margin-bottom: 3%;
