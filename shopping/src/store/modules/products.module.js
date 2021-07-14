@@ -2,6 +2,7 @@ import axios from "axios";
 
 const state = () => ({
   products: [],
+  count: 0,
   product: {},
   search: "",
   category: { value: '', label: 'Default category' },
@@ -15,9 +16,9 @@ const getters = {
 };
 
 const actions = {
-  getProducts: async ({commit}) => {
+  getProducts: async ({commit}, {sortType, prop, offset}) => {
     try {
-      const res = await axios.get("products")
+      const res = await axios.get(`products?sortType=${sortType}&prop=${prop}&offset=${offset}`, )
       commit("GET_PRODUCTS", res.data)
     } catch (e) {
       console.log(e)
@@ -38,8 +39,9 @@ const actions = {
   }
 };
 const mutations = {
-  GET_PRODUCTS (state, products) {
-    state.products = products
+  GET_PRODUCTS (state, data) {
+    state.products = data.Products
+    state.count = data.Count
   },
   GET_PRODUCT_BY_CATEGORY (state, category) {
     const categoryCurrent = category.category_name

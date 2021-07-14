@@ -19,6 +19,7 @@ func main() {
 		log.Printf("Error %s when getting db connection", err)
 		return
 	}
+
 	defer db.Close()
 	log.Printf("Successfully connected to database")
 
