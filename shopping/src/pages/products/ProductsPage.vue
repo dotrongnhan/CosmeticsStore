@@ -171,7 +171,7 @@ export default {
     },
     changePage(value) {
       this.pageIndex = value
-      this.$store.dispatch("products/getProducts", {category: this.value,sortType: this.direction.value ,offset: value});
+      this.$store.dispatch("products/getProducts", {category: this.value.value,sortType: this.direction.value ,offset: value});
     }
   },
   computed: {

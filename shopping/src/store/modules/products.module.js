@@ -17,7 +17,6 @@ const getters = {
 
 const actions = {
   getProducts: async ({commit}, {category, sortType, offset = 1}) => {
-    console.log(category, sortType, offset)
     try {
       const res = await axios.get(`products?sortType=${sortType}&offset=${offset}&category=${category}`, )
       commit("GET_PRODUCTS", res.data)
@@ -46,7 +45,6 @@ const mutations = {
     state.count = data.Count
   },
   GET_PRODUCT_BY_CATEGORY (state, category) {
-    console.log(category)
     state.category = category
     },
   GET_PRODUCTS_BY_ID: (state, product) => {
