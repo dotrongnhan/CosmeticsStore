@@ -9,8 +9,8 @@ const routes = [
   { path: "/cart", component: () => require("../pages/cart/CartPage") },
   { path: "/login", component: () => require("../pages/login/LoginPage") },
   { path: "/register", component: () => require("../pages/register/RegisterPage") },
-  {path: "/payment", component: () => require("../pages/payment/Payment")},
-  {path: "/confirm-checkout", component: () => require("../pages/confirm-checkout/ConfirmCheckout")},
+  { path: "/payment", component: () => require("../pages/payment/Payment")},
+  { path: "/confirm-checkout", component: () => require("../pages/confirm-checkout/ConfirmCheckout")},
   {
     path: "/user",
     component: () => require("../pages/user/UserPage"),

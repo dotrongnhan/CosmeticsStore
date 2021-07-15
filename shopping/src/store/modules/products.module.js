@@ -17,7 +17,6 @@ const getters = {
 
 const actions = {
   getProducts: async ({commit}, {category = 'Default', sortType = 'Default', offset = 1}) => {
-    console.log(category, sortType, offset)
     try {
       const res = await axios.get(`products?sortType=${sortType}&offset=${offset}&category=${category}`, )
       commit("GET_PRODUCTS", res.data)
@@ -26,10 +25,8 @@ const actions = {
     }
   },
   getProductById: async ({commit}, id) => {
-    console.log(id)
     try {
       const res = await axios.get(`products/${id}`)
-      console.log(res.data)
       commit("GET_PRODUCTS_BY_ID", res.data)
     } catch (e) {
       console.log(e)

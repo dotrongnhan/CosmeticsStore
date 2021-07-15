@@ -45,8 +45,7 @@ const actions = {
 
   async register({ commit }, user) {
     try {
-      const res = await axios.post('register', user)
-      console.log("register success" + res)
+      await axios.post('register', user)
       commit("setRegisterSuccess", true);
       commit("setRegisterMessage", "");
     } catch (e) {
@@ -76,7 +75,6 @@ const mutations = {
   setRegisterSuccess(state, status) {
     state.isRegisterSuccess = status;
   },
-
   setRegisterMessage(state, message) {
     state.registerMessage = message;
   },
@@ -85,7 +83,6 @@ const mutations = {
     state.user = {};
     state.isLoginSuccess = false;
     state.isRegisterSuccess = false;
-    localStorage.removeItem("User");
   },
 };
 

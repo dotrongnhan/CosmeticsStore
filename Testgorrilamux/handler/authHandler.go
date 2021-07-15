@@ -51,11 +51,11 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		RoleId:      uint(roleId),
 	}
 	_, err = stmt.Exec(user.FullName, user.Email, user.Password, user.RoleId)
+	fmt.Println(err)
 	if err != nil {
 		http.Error(w, "Email is existed", http.StatusMethodNotAllowed )
 		return
 	}
-	fmt.Fprintf(w, "New user was created")
 	json.NewEncoder(w).Encode(user)
 }
 func Login(w http.ResponseWriter, r *http.Request) {
