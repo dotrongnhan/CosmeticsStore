@@ -7,7 +7,7 @@
           <div class="block1 hov-img-zoom pos-relative m-b-30">
             <img src="https://m.media-amazon.com/images/S/aplus-media/vc/9367a902-f4c8-455e-9e01-23a4051f5d11.__CR0,0,300,300_PT0_SX300_V1___.jpg" alt="IMG-BENNER" />
 
-            <div @click="summitCategory(5)" class="block1-wrapbtn w-size2">
+            <div @click="summitCategory({ value: 'Lipstick', label: 'Lipstick' })" class="block1-wrapbtn w-size2">
               <router-link to="/products" class="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
                 LIPSTICK
               </router-link>
@@ -17,7 +17,7 @@
           <div class="block1 hov-img-zoom pos-relative m-b-30">
             <img src="https://cdn.chanhtuoi.com/viectainha/2021/02/w800/w400/serum-duong-da-cang-bong-silk.jpg.webp" alt="IMG-BENNER" />
 
-            <div @click="summitCategory(6)" class="block1-wrapbtn w-size2">
+            <div @click="summitCategory({ value: 'Serum', label: 'Serum' })" class="block1-wrapbtn w-size2">
               <router-link to="/products"  class="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
                 SERUM
               </router-link>
@@ -30,7 +30,7 @@
           <div class="block1 hov-img-zoom pos-relative m-b-30">
             <img src="https://baamboo.com/wp-content/uploads/2020/06/nuoc-hoa-hong-thayers-7.jpg" alt="IMG-BENNER" />
 
-            <div @click="summitCategory(4)" class="block1-wrapbtn w-size2">
+            <div @click="summitCategory({value : 'Toner'})" class="block1-wrapbtn w-size2">
               <router-link to="/products"  class="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
                 TONER
               </router-link>
@@ -40,7 +40,7 @@
           <div class="block1 hov-img-zoom pos-relative m-b-30">
             <img src="https://cf.shopee.vn/file/9eff84beecee212da4c9433e5cca3004" alt="IMG-BENNER" />
 
-            <div  @click="summitCategory(2)" class="block1-wrapbtn w-size2">
+            <div  @click="summitCategory({ value: 'Toner', label: 'Toner' })" class="block1-wrapbtn w-size2">
               <router-link to="/products"  class="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
                 MASK
               </router-link>
@@ -53,7 +53,7 @@
           <div class="block1 hov-img-zoom pos-relative m-b-30">
             <img src="https://tudienlamdep.org/wp-content/uploads/2019/09/kem-chong-nang-nuskin-sunright-spf50-3.jpg" alt="IMG-BENNER" />
 
-            <div  @click="summitCategory(3)" class="block1-wrapbtn w-size2">
+            <div  @click="summitCategory({ value: 'Face Scream', label: 'Face Scream' })" class="block1-wrapbtn w-size2">
               <!-- Button -->
               <router-link to="/products"  class="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
                 FACE SCREAM
@@ -84,7 +84,6 @@
                 </router-link>
               </div>
               <div v-else  @click="summitCategory(3)" class="block1-wrapbtn w-size2">
-                <!-- Button -->
                 <router-link to="/products"  class="flex-c-m size2 m-text2 bg3 hov1 trans-0-4">
                   Sale
                 </router-link>
@@ -106,7 +105,8 @@ export default {
   name: "SectionCategory",
   methods: {
     summitCategory (category) {
-          this.$store.dispatch("products/getProductByCategory", category)
+          this.$store.commit("products/GET_PRODUCT_BY_CATEGORY", category)
+          this.$store.dispatch("products/getProducts", {offset: 1, sortType: 'Default', category: category.value})
     }
   },
   computed: {
