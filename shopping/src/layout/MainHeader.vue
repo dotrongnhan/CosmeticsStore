@@ -143,7 +143,7 @@ export default {
     };
   },
   created() {
-    this.getProducts()
+    this.getProducts({})
     if (getCookie("jwt")) {
       this.getUserExits()
     }
