@@ -23,10 +23,9 @@ func GetProducts(w http.ResponseWriter, r *http.Request) {
 	limit := 16
 	params := r.URL.Query()
 	sortType := params.Get("sortType")
-	prop := params.Get("prop")
-	//limit, _ := strconv.Atoi(params.Get("limit"))
 	offset, _ := strconv.Atoi(params.Get("offset"))
-	result, count := repository.GetProducts(sortType, prop, limit, offset)
+	category := params.Get("category")
+	result, count := repository.GetProducts(sortType, category, limit, offset)
 	json.NewEncoder(w).Encode(resProduct{result, count})
 }
 
@@ -50,8 +49,8 @@ func CreateProduct(w http.ResponseWriter, r *http.Request) {
 	}
 	var product models.Product
 	json.Unmarshal(body, &product)
-	errr := repository.CreateProduct(product)
-	if errr != nil {
+	error := repository.CreateProduct(product)
+	if error != nil {
 		fmt.Fprintln(w, "Cannot create product!")
 	}
 	fmt.Fprintf(w, "New product was created")

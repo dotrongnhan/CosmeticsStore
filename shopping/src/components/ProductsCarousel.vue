@@ -18,7 +18,7 @@
     }"
   >
     <Slide v-for="product in products" :key="product.id">
-      <div class="item-slick2 p-l-15 p-r-15">
+      <div class="item-slick2 p-l-15 p-r-15 w-100">
         <!-- Block2 -->
         <div class="block2">
           <div
@@ -45,6 +45,7 @@
               <div class="block2-btn-addcart w-size1 trans-0-4">
                 <!-- Button -->
                 <button
+                    @click="addToCart(product)"
                   class="flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4"
                 >
                   Add to Cart
@@ -55,6 +56,7 @@
 
           <div class="block2-txt p-t-20">
             <router-link
+                @click="getProductById(product.id)"
               :to="'/products/' + product.id"
               class="block2-name dis-block s-text3 p-b-5"
             >
@@ -79,12 +81,11 @@
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Navigation } from "vue3-carousel";
 import { currency } from "@/utils/currency";
+import {mapActions} from "vuex";
 
 export default {
   name: "ProductsCarousel",
-
   props: ["products"],
-
   components: {
     Carousel,
     Slide,
@@ -92,7 +93,12 @@ export default {
   },
 
   methods: {
+    addToCart(product) {
+      this.$store.commit('cart/addProductToCart', {product: product, quantity: 1})
+    },
     currency,
+    ...mapActions("products",["getProductById"])
+
   },
 };
 </script>

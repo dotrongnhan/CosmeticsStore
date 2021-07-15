@@ -19,8 +19,14 @@
 
       <div v-else class="flex-w flex-sb">
         <div class="w-size13 p-t-30 respon5">
-          <div class="wrap-slick3 flex-sb flex-w">
+          <div style="
+    justify-content: center;
+" class="wrap-slick3 flex-sb flex-w">
               <div
+                  style="
+    width: 80%;
+    height: auto;
+"
                 data-thumb="@/assets/images/thumb-item-01.jpg"
               >
                 <div class="wrap-pic-w">

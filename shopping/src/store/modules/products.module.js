@@ -5,7 +5,7 @@ const state = () => ({
   count: 0,
   product: {},
   search: "",
-  category: { value: '', label: 'Default category' },
+  category: { value: 'default', label: 'Default category' },
   sort: 0,
 });
 
@@ -16,16 +16,16 @@ const getters = {
 };
 
 const actions = {
-  getProducts: async ({commit}, {sortType, prop, offset}) => {
-    console.log(sortType, prop, offset)
+  getProducts: async ({commit}, {category, sortType, offset = 1}) => {
     try {
-      const res = await axios.get(`products?sortType=${sortType}&prop=${prop}&offset=${offset}`, )
+      const res = await axios.get(`products?sortType=${sortType}&offset=${offset}&category=${category}`, )
       commit("GET_PRODUCTS", res.data)
     } catch (e) {
       console.log(e)
     }
   },
   getProductById: async ({commit}, id) => {
+    console.log(id)
     try {
       const res = await axios.get(`products/${id}`)
       console.log(res.data)
@@ -45,36 +45,11 @@ const mutations = {
     state.count = data.Count
   },
   GET_PRODUCT_BY_CATEGORY (state, category) {
-    const categoryCurrent = category.category_name
-    state.products = category.products
-    if(categoryCurrent === 'mask') {
-      state.category = { value: 2, label: 'Mask' }
-      console.log(state.category)
-    }
-    if(categoryCurrent === 'face scream') {
-      state.category = { value: 3, label: 'Face Scream' }
-    }
-    if(categoryCurrent === 'toner') {
-      state.category = { value: 4, label: 'Toner' }
-    }
-    if(categoryCurrent === 'lipstick') {
-      state.category = { value: 5, label: 'Lipstick' }
-    }
-    if(categoryCurrent === 'serum') {
-      state.category = { value: 6, label: 'Serum' }
-    }
+    state.category = category
     },
   GET_PRODUCTS_BY_ID: (state, product) => {
     state.product = product
   },
-  SORT_PRODUCT:(state, direction) => {
-    if(direction === -1) {
-      state.products = state.products.sort((a,b) => a.price - b.price)
-    }
-    if(direction === 1) {
-      state.products = state.products.sort((a,b) => b.price - a.price)
-    }
-  }
 };
 
 export default {
