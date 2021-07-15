@@ -23,9 +23,9 @@
                 <div class="bo4 w-size12 m-t-5 m-b-5 m-r-10">
                   <Select2
                     :options="[
-                      { value: '', label: 'Default Sorting' },
-                      { value: ['ASC','price'], label: 'Price: low to high' },
-                      { value: ['DESC','price'], label: 'Price: high to low' },
+                      { value: 'Default', label: 'Default Sorting' },
+                      { value: 'ASC', label: 'Price: low to high' },
+                      { value: 'DESC', label: 'Price: high to low' },
                     ]"
                     @change="sort"
                     :value="direction"
@@ -35,12 +35,12 @@
                 <div class="bo4 w-size12 m-t-5 m-b-5 m-r-10">
                   <Select2
                     :options="[
-                      { value: '', label: 'Default category' },
-                      { value: 4, label: 'Toner' },
-                      { value: 2, label: 'Mask' },
-                      { value: 5, label: 'Lipstick' },
-                      { value: 3, label: 'Face Scream' },
-                      { value: 6, label: 'Serum' },
+                      { value: 'Default', label: 'Default category' },
+                      { value: 'Toner', label: 'Toner' },
+                      { value: 'Mask', label: 'Mask' },
+                      { value: 'Lipstick', label: 'Lipstick' },
+                      { value: 'Face Scream', label: 'Face Scream' },
+                      { value: 'Serum', label: 'Serum' },
                     ]"
                     @change="category"
                     :value="currentCategory"
@@ -129,7 +129,7 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import {mapActions, mapMutations, mapState} from "vuex";
 import { currency } from "@/utils/currency";
 import Select2 from "@/components/Select2.vue";
 import Pagination from "@/components/Pagination.vue";
@@ -142,8 +142,8 @@ export default {
   },
   data() {
     return {
-      value: {},
-      direction: {},
+      value: {value: "Default"},
+      direction: {value : "Default"},
       pageIndex: 1,
       limit: 16,
     }
@@ -154,22 +154,24 @@ export default {
   },
   methods: {
     currency,
+    ...mapActions("products", ["getProducts"]),
+    ...mapMutations("products", ["GET_PRODUCT_BY_CATEGORY"]),
     sort(direction) {
-      this.$store.dispatch("products/getProducts", {sortType: direction.value[0],prop: direction.value[1], offset: this.pageIndex})
+      console.log(direction.value)
+      this.getProducts({category: this.value.value,sortType: direction.value, offset: this.pageIndex})
       this.direction = direction
     },
     category(value) {
-      this.$store.dispatch("products/getProductByCategory", value.value)
-      this.direction = ""
-      this.value = this.currentCategory
+      this.getProducts({category: value.value, offset: this.pageIndex, sortType: this.direction.value})
+      this.$store.commit('products/GET_PRODUCT_BY_CATEGORY', value)
+      this.value = value
     },
     addToCart(product) {
       this.$store.commit('cart/addProductToCart', {product: product, quantity: 1})
     },
     changePage(value) {
       this.pageIndex = value
-      console.log(this.direction)
-      this.$store.dispatch("products/getProducts", {sortType: this.direction.value[0] ,prop: this.direction.value[1],offset: value});
+      this.$store.dispatch("products/getProducts", {category: this.value,sortType: this.direction.value ,offset: value});
     }
   },
   computed: {

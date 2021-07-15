@@ -1,14 +1,11 @@
 <template>
   <header class="header1">
-    <!-- Header desktop -->
     <div class="container-menu-header">
       <div class="wrap_header">
-        <!-- Logo -->
         <router-link to="/" class="logo">
           <img src="https://media.istockphoto.com/vectors/women-beauty-icon-vector-id877241778?b=1&k=6&m=877241778&s=612x612&w=0&h=kK7KTz70gcdMxzD3rUjqKagoTdw6VbS-p5EgFar_BME=" alt="IMG-LOGO" />
         </router-link>
 
-        <!-- Menu -->
         <div class="wrap_menu">
           <nav class="menu">
             <ul class="main_menu">
@@ -23,7 +20,6 @@
           </nav>
         </div>
 
-        <!-- Header Icon -->
         <div class="header-icons">
           <!-- <router-link :to="isLoginSuccess ? '/user' : '/login'">
             <img

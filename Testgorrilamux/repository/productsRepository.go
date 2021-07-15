@@ -6,24 +6,29 @@ import (
 	"fmt"
 )
 
-func GetProducts(sortType string, prop string, limit int, offset int) (products []models.Product, countProducts int) {
-	offsetValue := offset * (limit - 1)
-	fmt.Println(sortType,prop,offset)
+func GetProducts(sortType string, category string, limit int, offset int) (products []models.Product, countProducts int) {
+	offsetValue := limit * (offset - 1)
 	query, err := database.DB.Query("")
 	count, err := database.DB.Query("")
-	if sortType == "ASC" && prop == "name" {
-		query, err = database.DB.Query("SELECT P.*, C.category_name, B.brand_name FROM products P JOIN categories C ON C.id = P.category_id JOIN brands B ON B.id = P.brand_id ORDER BY P.product_name ASC LIMIT ? OFFSET ?", limit, offsetValue)
-	} else if sortType == "DESC" && prop == "name" {
-		query, err = database.DB.Query("SELECT P.*, C.category_name, B.brand_name FROM products P JOIN categories C ON C.id = P.category_id JOIN brands B ON B.id = P.brand_id ORDER BY P.product_name DESC LIMIT ? OFFSET ?", limit, offsetValue)
-	} else if sortType == "ASC" && prop == "price" {
+	fmt.Println(sortType,category,offset)
+	if category == "Default" && sortType == "ASC" {
 		query, err = database.DB.Query("SELECT P.*, C.category_name, B.brand_name FROM products P JOIN categories C ON C.id = P.category_id JOIN brands B ON B.id = P.brand_id ORDER BY P.price ASC LIMIT ? OFFSET ?", limit, offsetValue)
-	} else if sortType == "DESC" && prop == "price" {
+		count, _ = database.DB.Query("SELECT COUNT(*) FROM products")
+	} else if sortType == "DESC" && category == "Default" {
 		query, err = database.DB.Query("SELECT P.*, C.category_name, B.brand_name FROM products P JOIN categories C ON C.id = P.category_id JOIN brands B ON B.id = P.brand_id ORDER BY P.price DESC LIMIT ? OFFSET ?", limit, offsetValue)
+		count, _ = database.DB.Query("SELECT COUNT(*) FROM products")
+	} else if category != "Default" && sortType == "ASC" {
+		query, err = database.DB.Query("SELECT P.*, C.category_name, B.brand_name FROM products as P JOIN categories as C ON C.id = P.category_id JOIN brands as B ON B.id = P.brand_id where C.category_name = ? ORDER BY P.price ASC LIMIT ? OFFSET ?", category, limit, offsetValue)
+		count, _ = database.DB.Query("SELECT count(*) FROM products as P JOIN categories as C ON C.id = P.category_id JOIN brands as B ON B.id = P.brand_id where C.category_name = ?", category)
+	} else if category != "Default" && sortType == "DESC" {
+		query, err = database.DB.Query("SELECT P.*, C.category_name, B.brand_name FROM products as P JOIN categories as C ON C.id = P.category_id JOIN brands as B ON B.id = P.brand_id where C.category_name = ? ORDER BY P.price DESC LIMIT ? OFFSET ?", category, limit, offsetValue)
+		count, _ = database.DB.Query("SELECT count(*) FROM products as P JOIN categories as C ON C.id = P.category_id JOIN brands as B ON B.id = P.brand_id where C.category_name = ?", category)
 	} else {
-		fmt.Println(offset)
+		fmt.Println(1)
 		query, err = database.DB.Query("SELECT P.*, C.category_name, B.brand_name FROM products P JOIN categories C ON C.id = P.category_id JOIN brands B ON B.id = P.brand_id LIMIT ? OFFSET ?", limit, offsetValue)
+		count, _ = database.DB.Query("SELECT COUNT(*) FROM products")
 	}
-	count, _ = database.DB.Query("SELECT COUNT(*) FROM products")
+
 	if err != nil {
 		err.Error()
 	}
@@ -74,8 +79,6 @@ func GetProductByCategoryName(name string) (products []models.Product) {
 			err.Error()
 		}
 		products = append(products, product)
-		fmt.Println(1)
-		fmt.Println(products)
 	}
 	return products
 }
