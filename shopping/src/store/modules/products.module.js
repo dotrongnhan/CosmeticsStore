@@ -16,7 +16,8 @@ const getters = {
 };
 
 const actions = {
-  getProducts: async ({commit}, {category, sortType, offset = 1}) => {
+  getProducts: async ({commit}, {category = 'Default', sortType = 'Default', offset = 1}) => {
+    console.log(category, sortType, offset)
     try {
       const res = await axios.get(`products?sortType=${sortType}&offset=${offset}&category=${category}`, )
       commit("GET_PRODUCTS", res.data)
@@ -34,10 +35,6 @@ const actions = {
       console.log(e)
     }
   },
-  getProductByCategory: async ({commit}, category) => {
-    const res = await axios.get(`http://127.0.0.1:3000/api/category/${category}`)
-    commit('GET_PRODUCT_BY_CATEGORY', res.data)
-  }
 };
 const mutations = {
   GET_PRODUCTS (state, data) {

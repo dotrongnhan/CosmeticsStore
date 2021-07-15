@@ -157,7 +157,6 @@ export default {
     ...mapActions("products", ["getProducts"]),
     ...mapMutations("products", ["GET_PRODUCT_BY_CATEGORY"]),
     sort(direction) {
-      console.log(direction.value)
       this.getProducts({category: this.value.value,sortType: direction.value, offset: this.pageIndex})
       this.direction = direction
     },
