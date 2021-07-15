@@ -26,6 +26,7 @@ const actions = {
     }
   },
   getProductById: async ({commit}, id) => {
+    console.log(id)
     try {
       const res = await axios.get(`products/${id}`)
       console.log(res.data)

@@ -18,7 +18,7 @@
     }"
   >
     <Slide v-for="product in products" :key="product.id">
-      <div class="item-slick2 p-l-15 p-r-15">
+      <div class="item-slick2 p-l-15 p-r-15 w-100">
         <!-- Block2 -->
         <div class="block2">
           <div
