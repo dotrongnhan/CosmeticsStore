@@ -20,7 +20,7 @@
               <li>
                 <router-link to="/user/profile">Profile</router-link>
               </li>
-              <li v-if="user.role_id === 1">
+              <li>
                 <router-link to="/user/settings">Settings</router-link>
               </li>
               <li>
