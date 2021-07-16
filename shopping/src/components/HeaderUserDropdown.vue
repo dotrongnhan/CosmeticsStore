@@ -15,7 +15,7 @@
     <div class="dropdown-content">
     <a href="/user/profile">Profile</a>
     <a href="/user/settings">Settings</a>
-    <a href="#" @click="logout">Sign out</a>
+    <a href="/login" @click="logout()">Sign out</a>
   </div>
     </div>
   </div>
@@ -46,10 +46,8 @@ export default {
     toggleUserUp() {
       this.$store.commit("users/setShowUserDropdown", false);
     },
-    logout(event) {
-      event.preventDefault();
+    logout() {
       this.$store.dispatch("users/logout");
-      this.$router.replace("/");
     },
     currency,
   },
