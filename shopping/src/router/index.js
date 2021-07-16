@@ -1,23 +1,23 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
-  { path: "/", component: () => require("../pages/home/HomePage") },
-  { path: "/products", component: () => require("../pages/products/ProductsPage") },
-  { path: "/products/:id", component: () => require("../pages/product-detail/ProductDetailPage") },
-  { path: "/about", component: () => require("../pages/about/AboutPage") },
-  { path: "/contact", component: () => require("../pages/contact/ContactPage") },
-  { path: "/cart", component: () => require("../pages/cart/CartPage") },
-  { path: "/login", component: () => require("../pages/login/LoginPage") },
-  { path: "/register", component: () => require("../pages/register/RegisterPage") },
-  { path: "/payment", component: () => require("../pages/payment/Payment")},
-  { path: "/confirm-checkout", component: () => require("../pages/confirm-checkout/ConfirmCheckout")},
+  { path: "/", component: () => import("../pages/home/HomePage") },
+  { path: "/products", component: () => import("../pages/products/ProductsPage") },
+  { path: "/products/:id", component: () => import("../pages/product-detail/ProductDetailPage") },
+  { path: "/about", component: () => import("../pages/about/AboutPage") },
+  { path: "/contact", component: () => import("../pages/contact/ContactPage") },
+  { path: "/cart", component: () => import("../pages/cart/CartPage") },
+  { path: "/login", component: () => import("../pages/login/LoginPage") },
+  { path: "/register", component: () => import("../pages/register/RegisterPage") },
+  { path: "/payment", component: () => import("../pages/payment/Payment")},
+  { path: "/confirm-checkout", component: () => import("../pages/confirm-checkout/ConfirmCheckout")},
   {
     path: "/user",
-    component: () => require("../pages/user/UserPage"),
+    component: () => import("../pages/user/UserPage"),
     children: [
-      { path: "", component: () => require("../pages/user/ProfilePage") },
-      { path: "profile", component: () => require("../pages/user/ProfilePage") },
-      { path: "settings", component: () => require("../pages/user/SettingsPage") },
+      { path: "", component: () => import("../pages/user/ProfilePage") },
+      { path: "profile", component: () => import("../pages/user/ProfilePage") },
+      { path: "settings", component: () => import("../pages/user/SettingsPage") },
     ],
   },
 ];

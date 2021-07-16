@@ -34,13 +34,10 @@ export default {
       }
   },
   computed: {
-    // ...mapState("cart", ["products", "isShowCartDropdown", "addToCartResult"]),
     ...mapState("users", ["isShowUserDropdown", "isLoginSuccess", "user"]),
-    // ...mapGetters("cart", ["totalItems", "subTotal"]),
   },
 
   methods: {
-    // getCookie,
     ...mapActions("users",["getUserExits"]),
     ...mapMutations("users", ["updateUser"]),
     toggleUserDropdown() {
