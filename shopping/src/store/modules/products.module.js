@@ -32,8 +32,20 @@ const actions = {
       console.log(e)
     }
   },
+  deleteProduct: async ({commit}, id) => {
+    try {
+      await axios.delete(`products/${id}`, {withCredentials: true})
+      await commit('DELETE_PRODUCT', id)
+    } catch (e) {
+      console.log(e)
+    }
+  }
 };
 const mutations = {
+  DELETE_PRODUCT (state, id) {
+    const index = state.products.findIndex(product => product.id === id)
+    state.products.splice(index, 1)
+  },
   GET_PRODUCTS (state, data) {
     state.products = data.Products
     state.count = data.Count

@@ -162,7 +162,7 @@ export default {
       this.pageIndex = 1
     },
     category(value) {
-      this.getProducts({category: value.value, offset: this.pageIndex, sortType: this.direction.value})
+      this.getProducts({category: value.value, offset: 1, sortType: this.direction.value})
       this.$store.commit('products/GET_PRODUCT_BY_CATEGORY', value)
       this.value = value
     },

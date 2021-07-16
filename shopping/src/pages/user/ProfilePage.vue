@@ -34,7 +34,7 @@
       <!-- Profile  -->
       <div class="row" id="profile" v-show="status==='about'">
         <div class="col-md-8">
-          <div class="tab-content profile-tab" id="myTabContent">
+          <div class="tab-content profile-tab">
           
             <Form @submit="onSubmit" :validation-schema="schemaProfile" style="margin-left: 390px; margin-top: -100px; width : 74%;">
                 <div>
@@ -209,7 +209,6 @@
                   type="password"
                   placeholder='Your current password...'
                   class="sizefull s-text7 p-l-22 p-r-22"
-                  id="passwordField"
                   :disabled="isLoading"
                 />
               </div>
@@ -228,7 +227,6 @@
                   type="password"
                   placeholder="Your new password..."
                   class="sizefull s-text7 p-l-22 p-r-22"
-                  id="passwordField"
                   :disabled="isLoading"
                 />
               </div>
