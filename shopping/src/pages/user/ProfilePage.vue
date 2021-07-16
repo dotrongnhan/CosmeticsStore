@@ -35,31 +35,30 @@
       <div class="row" id="profile" v-show="status==='about'">
         <div class="col-md-8">
           <div class="tab-content profile-tab">
-          
             <Form @submit="onSubmit" :validation-schema="schemaProfile" style="margin-left: 390px; margin-top: -100px; width : 74%;">
-                <div>
-                <button
+              <div>
+                <div
                     style = "width: 30%; margin-left: 390px"
                     @click="editProfile"
-                    class="flex-c-m size2 bg1 bo-rad-23 hov1 m-text3 trans-0-4 m-t-20"
+                    class="flex-c-m size2 bg1 bo-rad-23 hov1 m-text3 trans-0-4 m-t-20 edit-button"
                   :class="{ disabled: isLoading }"
                   :disabled="isLoading"
                   v-show="!onEdit"
                 >
                   <span v-show="isLoading" data-loader="ball-scale"></span>
                   Edit Profile
-                </button>
-                <button
+                </div>
+                <div
                     style = "width: 30%; margin-left: 390px"
                     @click="removeEditProfile"
-                    class="flex-c-m size2 bg1 bo-rad-23 hov1 m-text3 trans-0-4 m-t-20"
+                    class="flex-c-m size2 bg1 bo-rad-23 hov1 m-text3 trans-0-4 m-t-20 edit-button"
                   :class="{ disabled: isLoading }"
                   :disabled="isLoading"
                   v-show="onEdit"
                 >
                   <span v-show="isLoading" data-loader="ball-scale"></span>
                   Cancel
-                </button>
+                </div>
               </div>
                 <div v-show="onEdit">              
                   <div class="col-md-6">
@@ -171,7 +170,7 @@
               />
               <button
                     style="margin-left: 195px; width: 30%;"
-                    @click="onSubmit(); removeEditProfile(); myFunction();"
+                    @click="removeEditProfile(); myFunction();"
                     class="flex-c-m size2 bg1 bo-rad-23 hov1 m-text3 trans-0-4 m-t-20"
                   :class="{ disabled: isLoading }"
                   :disabled="isLoading"
@@ -208,7 +207,7 @@
                   name="current_password"
                   type="password"
                   placeholder='Your current password...'
-                  class="sizefull s-text7 p-l-22 p-r-22"
+                  class="sizefull s-text7 p-l-22 p-r-22 password-field"
                   :disabled="isLoading"
                 />
               </div>
@@ -226,7 +225,7 @@
                   name="new_password"
                   type="password"
                   placeholder="Your new password..."
-                  class="sizefull s-text7 p-l-22 p-r-22"
+                  class="sizefull s-text7 p-l-22 p-r-22 password-field"
                   :disabled="isLoading"
                 />
               </div>
@@ -243,8 +242,7 @@
                   name="confirm_password"
                   type="password"
                   placeholder="Confirm your new password..."
-                  class="sizefull s-text7 p-l-22 p-r-22"
-                  id="passwordField"                  
+                  class="sizefull s-text7 p-l-22 p-r-22 password-field"             
                   :disabled="isLoading"
                 />
               </div>
@@ -255,7 +253,6 @@
 
               <button
                     style="margin-left: 150px; width: 40%;"
-                    @click="onSubmit1();"
                     class="flex-c-m size2 bg1 bo-rad-23 hov1 m-text3 trans-0-4 m-t-20"
                   :class="{ disabled: isLoading }"
                   :disabled="isLoading"
@@ -404,7 +401,7 @@ export default {
       })
       this.isLoading = false;
     setTimeout(() => {  
-        let elements = document.querySelectorAll('[id=passwordField]');
+        let elements = document.getElementsByClassName('password-field');
                 for(let i = 0; i < elements.length; i++) {
                       elements[i].value = '';
                 }
@@ -426,6 +423,10 @@ body{
   border: none;
 
 }
+.edit-button:hover {
+  cursor: pointer;
+} 
+
 .bo4 {
   border : none;
 }

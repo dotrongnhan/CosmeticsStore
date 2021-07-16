@@ -24,7 +24,7 @@
                 <router-link to="/user/settings">Settings</router-link>
               </li>
               <li>
-                <a href="#" @click="logout">Logout</a>
+                <a href="/login" @click="logout()">Logout</a>
               </li>
             </ul>
           </div>
@@ -48,10 +48,8 @@ export default {
     ...mapState("users", ["isLoginSuccess", "user"]),
 },
   methods: {
-    logout(event) {
-      event.preventDefault();
+    logout() {
       this.$store.dispatch("users/logout");
-      this.$router.replace("/");
     },
   },
 };
