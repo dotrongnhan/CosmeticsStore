@@ -6,7 +6,11 @@ const state = () => ({
   isLoginSuccess: false,
   loginMessage: "",
   isRegisterSuccess: false,
+  isUpdateSuccess: false,
+  isChangePassSuccess: false,
   registerMessage: "",
+  updateMessage: "",
+  changePassMessage: "",
   isShowUserDropdown: false,
 });
 
@@ -45,7 +49,8 @@ const actions = {
 
   async register({ commit }, user) {
     try {
-      await axios.post('register', user)
+      const res = await axios.post('register', user)
+      console.log("register success" + res)
       commit("setRegisterSuccess", true);
       commit("setRegisterMessage", "");
     } catch (e) {
@@ -54,6 +59,31 @@ const actions = {
       commit("setRegisterSuccess", false);
     }
   },
+
+  async updateProfile({commit}, user) {
+    try {
+        const res = await axios.put('user', user, {withCredentials: true});
+        console.log(res);
+        commit("setUpdateSuccess", true);
+        commit("setUpdateMessage", "");
+    } catch (e) {
+      console.log(e)
+      commit("setUpdateMessage", e.message === "Request failed with status code 400" ? "????" : "????");
+      commit("setUpdateSuccess", false);
+    }
+  },
+  async changePassword({commit}, user) {
+    try {
+        const res = await axios.put('user/password', user, {withCredentials: true});
+        console.log(res);
+        commit("setChangePassSuccess", true);
+        commit("setChangePassMessage", "Change password successfully!");
+    } catch (e) {
+      // console.log(e)
+      commit("setChangePassMessage", e.message === "Request failed with status code 400" ? "????" : "????");
+      commit("setChangePassSuccess", false);
+    }
+  }
 };
 
 const mutations = {
@@ -75,14 +105,32 @@ const mutations = {
   setRegisterSuccess(state, status) {
     state.isRegisterSuccess = status;
   },
+
   setRegisterMessage(state, message) {
     state.registerMessage = message;
+  },
+
+  setUpdateSuccess(state, status) {
+    state.isUpdateSuccess = status;
+  },
+
+  setUpdateMessage(state, message) {
+    state.updateMessage = message;
+  },
+
+  setChangePassSuccess(state, status) {
+    state.isChangePassSuccess = status;
+  },
+
+  setChangePassMessage(state, message) {
+    state.changePassMessage = message;
   },
 
   logout(state) {
     state.user = {};
     state.isLoginSuccess = false;
     state.isRegisterSuccess = false;
+    localStorage.removeItem("User");
   },
 };
 
