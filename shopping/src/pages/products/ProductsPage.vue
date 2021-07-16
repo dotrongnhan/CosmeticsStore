@@ -157,8 +157,9 @@ export default {
     ...mapActions("products", ["getProducts"]),
     ...mapMutations("products", ["GET_PRODUCT_BY_CATEGORY"]),
     sort(direction) {
-      this.getProducts({category: this.value.value,sortType: direction.value, offset: this.pageIndex})
+      this.getProducts({category: this.value.value,sortType: direction.value, offset: 1})
       this.direction = direction
+      this.pageIndex = 1
     },
     category(value) {
       this.getProducts({category: value.value, offset: this.pageIndex, sortType: this.direction.value})

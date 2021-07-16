@@ -76,7 +76,7 @@
                 </td>
                 <td class="column-5 t-center">{{ currency(product.quantity * Number(product.product.price)) }}</td>
                 <td class="column-1">
-                  <button class="flex-c-m w-50 bg1 bo-rad-8 hov1 s-text1 trans-0-4">
+                  <button @click="deleteProduct(product)" class="flex-c-m w-50 bg1 bo-rad-8 hov1 s-text1 trans-0-4">
                     X
                   </button>
                 </td>
@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapGetters } from "vuex";
+import {mapState, mapMutations, mapGetters} from "vuex";
 import { currency } from "@/utils/currency";
 import CartTotals from "./CartTotals.vue";
 
@@ -118,6 +118,10 @@ export default {
   methods: {
     currency,
     ...mapMutations("cart", ["updateProductQuantity"]),
+    deleteProduct(data) {
+      console.log(data)
+      this.updateProductQuantity({productId: data.product.id, value: -data.value})
+    }
   },
 };
 </script>
