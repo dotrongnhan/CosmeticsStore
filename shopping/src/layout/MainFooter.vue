@@ -2,19 +2,18 @@
   <footer class="bg6 p-t-45 p-b-45 p-l-45 p-r-45">
     <div class="flex-w">
       <div class="w-size6 p-t-30 p-l-15 p-r-15 respon3">
-        <h4 class="s-text12 p-b-30">GET IN TOUCH</h4>
+        <h4 class="s-text12 p-b-30">ADDRESS</h4>
 
         <div>
           <p class="s-text7 w-size27">
-            Any questions? Let us know in store at Vien Dong Building, Alley 34 Hoang Cau, Coconut Market, Dong Da, Hanoi
+          Onoxa 2260 118th Ave N St. Petersburg FL 33716
           </p>
 
-          <div class="flex-m p-t-30">
-            <a href="#" class="fs-18 color1 p-r-20 fa fa-facebook"></a>
-            <a href="#" class="fs-18 color1 p-r-20 fa fa-instagram"></a>
-            <a href="#" class="fs-18 color1 p-r-20 fa fa-pinterest-p"></a>
-            <a href="#" class="fs-18 color1 p-r-20 fa fa-snapchat-ghost"></a>
-            <a href="#" class="fs-18 color1 p-r-20 fa fa-youtube-play"></a>
+          <h4 class="s-text12 p-b-30">SOCIAL HUB</h4>
+          <div class="flex-m p-t-30" style="margin-top: -30px;">
+            <a href="https://www.facebook.com/onoxa/" class="fs-18 color1 p-r-20 fa fa-facebook"></a>
+            <a href="https://www.instagram.com/onoxa_com/" class="fs-18 color1 p-r-20 fa fa-instagram"></a>
+            <a href="https://www.linkedin.com/company/onoxa" class="fs-18 color1 p-r-20 fa fa-linkedin"></a>
           </div>
         </div>
       </div>
@@ -23,20 +22,24 @@
         <h4 class="s-text12 p-b-30">Categories</h4>
 
         <ul>
-          <li class="p-b-9">
-            <a href="#" class="s-text7"> Lipstick </a>
+          <li class="p-b-9" @click="summitCategory({ value: 'Toner', label: 'Toner' })">
+            <router-link to="/products" class="s-text7" > Toner </router-link>
           </li>
 
-          <li class="p-b-9">
-            <a href="#" class="s-text7"> Face Scream </a>
+          <li class="p-b-9" @click="summitCategory({ value: 'Lipstick', label: 'Lipstick' })">
+            <router-link to="/products" class="s-text7" > Lipstick </router-link>
           </li>
 
-          <li class="p-b-9">
-            <a href="#" class="s-text7"> Mask </a>
+          <li class="p-b-9" @click="summitCategory({ value: 'Face Scream', label: 'Face Scream' })">
+            <router-link to="/products" class="s-text7" > Face Scream </router-link>
           </li>
 
-          <li class="p-b-9">
-            <a href="#" class="s-text7"> Serum </a>
+          <li class="p-b-9" @click="summitCategory({ value: 'Mask', label: 'Mask' })">
+            <router-link to="/products" class="s-text7" > Mask </router-link>
+          </li>
+
+          <li class="p-b-9" @click="summitCategory({ value: 'Serum', label: 'Serum' })">
+            <router-link to="/products" class="s-text7" > Serum </router-link>
           </li>
         </ul>
       </div>
@@ -50,15 +53,15 @@
           </li>
 
           <li class="p-b-9">
-            <a href="#" class="s-text7"> About Us </a>
+            <a href="/about" class="s-text7"> About Us </a>
           </li>
 
           <li class="p-b-9">
-            <a href="#" class="s-text7"> Contact Us </a>
+            <a href="/contact" class="s-text7"> Contact Us </a>
           </li>
 
           <li class="p-b-9">
-            <a href="#" class="s-text7"> Returns </a>
+            <a href="/" class="s-text7"> Returns </a>
           </li>
         </ul>
       </div>
@@ -114,5 +117,11 @@
 <script>
 export default {
   name: "MainFooter",
+  methods: {
+    summitCategory (category) {
+          this.$store.commit("products/GET_PRODUCT_BY_CATEGORY", category)
+          this.$store.dispatch("products/getProducts", {offset: 1, sortType: 'Default', category: category.value})
+    }
+  },
 };
 </script>
