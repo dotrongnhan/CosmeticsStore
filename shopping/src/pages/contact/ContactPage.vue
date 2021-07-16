@@ -87,8 +87,8 @@ export default {
     googleMapScript.onload = function () {
       const googleMap = window.google.maps;
       const mapSelector = document.getElementById("google_map");
-      const latitude = "21.016765",
-        longitude = "105.836177";
+      const latitude = "27.87907",
+        longitude = "-82.66465";
       const locations = [
         [
           '<div class="infobox"><p>Now that you visited our website, how' +
@@ -103,7 +103,7 @@ export default {
 
       if (mapSelector !== undefined) {
         map = new googleMap.Map(mapSelector, {
-          zoom: 15,
+          zoom: 10,
           scrollwheel: 0,
           navigationControl: true,
           mapTypeControl: false,
