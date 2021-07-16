@@ -28,11 +28,11 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	stmt, err := database.DB.Prepare("INSERT INTO users(full_name, email, password, role_id) VALUES (?,?,?,?)")
 	if err != nil {
-		err.Error()
+		fmt.Println(err.Error())
 	}
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		err.Error()
+		fmt.Println(err.Error())
 	}
 	var data map[string]string
 	json.Unmarshal(body, &data)
@@ -45,24 +45,24 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 	roleId := 2
 	user := models.User{
-		FullName:    data["full_name"],
-		Email:       data["email"],
-		Password:    pass,
-		RoleId:      uint(roleId),
+		FullName: data["full_name"],
+		Email:    data["email"],
+		Password: pass,
+		RoleId:   uint(roleId),
 	}
 	_, err = stmt.Exec(user.FullName, user.Email, user.Password, user.RoleId)
-	fmt.Println(err)
 	if err != nil {
-		http.Error(w, "Email is existed", http.StatusMethodNotAllowed )
+		http.Error(w, "Email is existed", http.StatusMethodNotAllowed)
 		return
 	}
+	fmt.Fprintf(w, "New user was created")
 	json.NewEncoder(w).Encode(user)
 }
 func Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		err.Error()
+		fmt.Println(err.Error())
 	}
 	var data map[string]string
 	json.Unmarshal(body, &data)
@@ -71,7 +71,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	for result.Next() {
 		err := result.Scan(&user.Id, &user.FullName, &user.Email, &user.Password, &user.Phone, &user.Address, &user.DateOfBirth, &user.Gender, &user.Avatar, &user.RoleId)
 		if err != nil {
-			err.Error()
+			fmt.Println(err.Error())
 		}
 	}
 	if data["email"] != user.Email {
@@ -84,29 +84,29 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	token, err := util.GenerateJwt(strconv.Itoa(int(user.RoleId)))
 	if err != nil {
-		err.Error()
+		fmt.Println(err.Error())
 	}
 
 	idToken, _ := util.GenerateJwt(strconv.Itoa(int(user.Id)))
 
 	cookie := &http.Cookie{
-		Name:     "jwt",
-		Value:    token,
-		Path: 	  "/",
-		Expires:  time.Now().Add(time.Hour * 24),
+		Name:    "jwt",
+		Value:   token,
+		Path:    "/",
+		Expires: time.Now().Add(time.Hour * 24),
 	}
 
 	idCookie := &http.Cookie{
-		Name:     "userId",
-		Value:    idToken,
-		Path:     "/",
-		Expires:  time.Now().Add(time.Hour * 24),
+		Name:    "userId",
+		Value:   idToken,
+		Path:    "/",
+		Expires: time.Now().Add(time.Hour * 24),
 	}
 
 	http.SetCookie(w, cookie)
 	http.SetCookie(w, idCookie)
 	w.Header().Set("JWT", token)
-	json.NewEncoder(w).Encode(ResLogin{ Result: "Login successfully",User: user, Token: token})
+	json.NewEncoder(w).Encode(ResLogin{Result: "Login successfully", User: user, Token: token})
 }
 
 func User(w http.ResponseWriter, r *http.Request) {
@@ -115,14 +115,14 @@ func User(w http.ResponseWriter, r *http.Request) {
 	id, _ := util.ParseJwt(cookie.Value)
 	query, err := database.DB.Query("SELECT id, full_name, email, password, phone, address, date_of_birth, gender, avatar, role_id FROM users WHERE id = ?", id)
 	if err != nil {
-		err.Error()
+		fmt.Println(err.Error())
 	}
 	defer query.Close()
 	var user models.User
 	for query.Next() {
 		err := query.Scan(&user.Id, &user.FullName, &user.Email, &user.Password, &user.Phone, &user.Address, &user.DateOfBirth, &user.Gender, &user.Avatar, &user.RoleId)
 		if err != nil {
-			err.Error()
+			fmt.Println(err.Error())
 		}
 	}
 	json.NewEncoder(w).Encode(user)
@@ -132,49 +132,77 @@ func UserProfile(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	cookie, _ := r.Cookie("userId")
 	id, _ := util.ParseJwt(cookie.Value)
-	stmt, err := database.DB.Prepare("UPDATE users SET full_name =?, email = ?, password = ?, phone = ?, address = ?, date_of_birth = ?, gender = ?, avatar = ? WHERE id = ?;")
+	stmt, err := database.DB.Prepare("UPDATE users SET full_name =?, phone = ?, address = ?, date_of_birth = ?, gender = ?, avatar = ? WHERE id = ?;")
 	if err != nil {
-		err.Error()
+		fmt.Println(err.Error())
 	}
 	defer stmt.Close()
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		err.Error()
+		fmt.Println(err.Error())
 	}
 	var data map[string]string
 	json.Unmarshal(body, &data)
-
-	if data["password"] != data["password_confirm"] {
-		err := ErrorResponse{
-			Err: "Password does not match",
-		}
-		json.NewEncoder(w).Encode(err)
-		return
-	}
-	pass, err := bcrypt.GenerateFromPassword([]byte(data["password"]), 14)
-	if err != nil {
-		fmt.Println(err)
-		err := ErrorResponse{
-			Err: "Password Encryption failed",
-		}
-		json.NewEncoder(w).Encode(err)
-	}
 	user := models.User{
 		FullName:    data["full_name"],
-		Email:       data["email"],
-		Password:    pass,
 		Phone:       data["phone"],
 		Address:     data["address"],
 		DateOfBirth: data["date_of_birth"],
 		Gender:      data["gender"],
 		Avatar:      data["avatar"],
 	}
-	_, err = stmt.Exec(user.FullName, user.Email, user.Password, user.Phone, user.Address, user.DateOfBirth, user.Gender, user.Avatar, id)
+	_, err = stmt.Exec(user.FullName, user.Phone, user.Address, user.DateOfBirth, user.Gender, user.Avatar, id)
 	if err != nil {
-		err.Error()
+		fmt.Println(err.Error())
 	}
 	fmt.Fprintf(w, "User was updated")
 	json.NewEncoder(w).Encode(user)
+}
+
+func UserPassword(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	cookie, _ := r.Cookie("userId")
+	id, _ := util.ParseJwt(cookie.Value)
+	stmt, err := database.DB.Prepare("UPDATE users SET password = ? WHERE id = ?;")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	defer stmt.Close()
+	query, _ := database.DB.Query("SELECT password FROM users WHERE id = ?", id)
+	defer query.Close()
+	var user models.User
+	for query.Next() {
+		err := query.Scan(&user.Password)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	var data map[string]string
+	json.Unmarshal(body, &data)
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data["current_password"])); err != nil {
+		http.Error(w, "Current password is wrong", http.StatusBadRequest)
+		return
+	}
+	pass, err := bcrypt.GenerateFromPassword([]byte(data["new_password"]), 14)
+	if err != nil {
+		err := ErrorResponse{
+			Err: "Password Encryption failed",
+		}
+		json.NewEncoder(w).Encode(err)
+	}
+	userr := models.User{
+		Password: pass,
+	}
+	_, err = stmt.Exec(userr.Password, id)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	// fmt.Fprintf(w, "User was updated")
+	json.NewEncoder(w).Encode("Change password successfully")
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
