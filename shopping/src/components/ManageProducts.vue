@@ -53,25 +53,26 @@
     </thead>
     <tbody>
     <tr v-for="(product, index) in products" :key="product.id">
-      <th scope="row">{{index + 1}}</th>
+      <th scope="row" class="parentCenter"><div class="center">{{index + 1}}</div></th>
       <td><img style="width: 100px" :src="product.image" alt=""></td>
-      <td class="t-center">{{product.product_name}}</td>
-      <td class="t-center">{{currency(product.price)}}</td>
-      <td class="t-center">{{product.category_name}}</td>
-      <td class="t-center">{{product.brand_name}}</td>
-      <td>
-        <div class="row">
+      <td class="t-center parentCenter"><div class="center">{{product.product_name}}</div></td>
+      <td class="t-center parentCenter"><div class="center">{{currency(product.price)}}</div></td>
+      <td class="t-center parentCenter"><div class="center">{{product.category_name}}</div></td>
+      <td class="t-center parentCenter"><div class="center">{{product.brand_name}}</div></td>
+      <td class="parentCenter">
+        <div class="row center">
           <div class="col-6 flex-c">
             <button type="button" class="btn btn-success">Edit</button>
           </div>
           <div class="col-6 flex-c">
-            <button type="button" class="btn btn-danger">Delete</button>
+            <button @click="deleteProduct(product.id)" type="button" class="btn btn-danger">Delete</button>
           </div>
         </div>
       </td>
     </tr>
     </tbody>
   </table>
+  <FormHandleProduct v-if="isDisplay" />
 </template>
 
 <script>
@@ -79,15 +80,18 @@ import Select2 from "./Select2";
 import Pagination from "./Pagination";
 import {mapActions, mapState} from "vuex";
 import {currency} from "../utils/currency";
+import FormHandleProduct from "./FormHandleProduct";
 
 export default {
   name: "ManageProducts",
   components: {
     Select2,
-    Pagination
+    Pagination,
+    FormHandleProduct
   },
   data() {
     return {
+      isDisplay: true,
       value: {value: "Default"},
       direction: {value : "Default"},
       pageIndex: 1,
@@ -102,7 +106,7 @@ export default {
   },
   methods: {
     currency,
-    ...mapActions("products", ["getProducts"]),
+    ...mapActions("products", ["getProducts", "deleteProduct"]),
     sort(direction) {
       this.getProducts({category: this.value.value,sortType: direction.value, offset: 1})
       this.direction = direction
@@ -134,5 +138,14 @@ input {
   height: 27px;
   margin-top: 5px;
   padding-left: 10px;
+}
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+.parentCenter {
+  position: relative;
 }
 </style>
