@@ -21,6 +21,9 @@ func Setup(router *mux.Router) {
 	router.HandleFunc("/api/products", middlewares.JwtVerify(handler.CreateProduct)).Methods("POST")
 	router.HandleFunc("/api/products/{id}", middlewares.JwtVerify(handler.UpdateProduct)).Methods("PUT")
 	router.HandleFunc("/api/products/{id}", middlewares.JwtVerify(handler.DeleteProduct)).Methods("DELETE")
+	router.HandleFunc("/api/users", middlewares.JwtVerify(handler.GetUsers)).Methods("GET")
+	router.HandleFunc("/api/users/{id}", middlewares.JwtVerify(handler.GetUser)).Methods("GET")
+	router.HandleFunc("/api/users/{id}", middlewares.JwtVerify(handler.DeleteUser)).Methods("DELETE")
 
 	//authentication
 	router.HandleFunc("/api/user", middlewares.LoginVerify(handler.User)).Methods("GET")
