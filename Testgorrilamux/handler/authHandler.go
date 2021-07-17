@@ -51,7 +51,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		Phone:       "Phone number",
 		Address:     "Address",
 		DateOfBirth: "Dob",
-		Gender:      data["gender"],
+		Gender:      "Male",
 		Avatar:      "Avatar Link",
 		RoleId:      uint(roleId),
 	}
