@@ -26,7 +26,7 @@ type ResLogin struct {
 
 func Register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	stmt, err := database.DB.Prepare("INSERT INTO users(full_name, email, password, role_id) VALUES (?,?,?,?)")
+	stmt, err := database.DB.Prepare("INSERT INTO users(full_name, email, password, phone, address, date_of_birth, gender, avatar, role_id) VALUES (?,?,?,?,?,?,?,?,?)")
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -45,12 +45,17 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 	roleId := 2
 	user := models.User{
-		FullName: data["full_name"],
-		Email:    data["email"],
-		Password: pass,
-		RoleId:   uint(roleId),
+		FullName:    data["full_name"],
+		Email:       data["email"],
+		Password:    pass,
+		Phone:       "Phone number",
+		Address:     "Address",
+		DateOfBirth: "Dob",
+		Gender:      data["gender"],
+		Avatar:      "Avatar Link",
+		RoleId:      uint(roleId),
 	}
-	_, err = stmt.Exec(user.FullName, user.Email, user.Password, user.RoleId)
+	_, err = stmt.Exec(user.FullName, user.Email, user.Password, user.Phone, user.Address, user.DateOfBirth, user.Gender, user.Avatar, user.RoleId)
 	if err != nil {
 		http.Error(w, "Email is existed", http.StatusMethodNotAllowed)
 		return
@@ -58,6 +63,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "New user was created")
 	json.NewEncoder(w).Encode(user)
 }
+
 func Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	body, err := ioutil.ReadAll(r.Body)
