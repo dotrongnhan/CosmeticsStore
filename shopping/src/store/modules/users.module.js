@@ -2,6 +2,7 @@
 import axios from "axios";
 
 const state = () => ({
+  users: [],
   user: {},
   isLoginSuccess: false,
   loginMessage: "",
@@ -17,6 +18,16 @@ const state = () => ({
 const getters = {};
 
 const actions = {
+  getUsers: async ({commit}) => {
+    try {
+      const res = await axios.get('users', {withCredentials: true});
+      console.log(res);
+      commit("GET_USERS", res.data)
+      commit("SET_USERS", res.data)
+    } catch (e) {
+      console.log(e)
+    }
+  },
   async getUserExits({commit}) {
     try {
       const res = await axios.get("user", {withCredentials: true})
@@ -87,11 +98,17 @@ const actions = {
 };
 
 const mutations = {
+  GET_USERS (state, data) {
+    state.users = data.Users
+  },
   setShowUserDropdown(state, status) {
     state.isShowUserDropdown = status;
   },
   setUser(state, user) {
     state.user = user;
+  },
+  SET_USERS(state, users) {
+    state.users = users;
   },
 
   setLoginSuccess(state, status) {
