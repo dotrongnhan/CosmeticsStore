@@ -15,7 +15,7 @@
     <div class="dropdown-content">
     <a href="/user/profile">Profile</a>
     <a href="/user/settings">Settings</a>
-    <a href="/login" @click="logout()">Sign out</a>
+    <a href="/" @click="logout()">Sign out</a>
   </div>
     </div>
   </div>
