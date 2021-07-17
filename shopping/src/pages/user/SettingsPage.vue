@@ -4,8 +4,8 @@
       <li @click="componentSelected = 'ManageProducts'" class="nav-item">
         <button :class="[componentSelected === 'ManageProducts' ? 'active nav-link' : 'nav-link']">Products</button>
       </li>
-      <li @click="componentSelected = 'ManageUser'" class="nav-item m-text6">
-        <button :class="[componentSelected === 'ManageUser' ? 'nav-link active' : 'nav-link']">User</button>
+      <li @click="componentSelected = 'ManageUsers'" class="nav-item m-text6">
+        <button :class="[componentSelected === 'ManageUsers' ? 'nav-link active' : 'nav-link']">User</button>
       </li>
     </ul>
   </div>
@@ -14,11 +14,13 @@
 
 <script>
 import ManageProducts from "../../components/ManageProducts";
+import ManageUsers from "../../components/ManageUsers";
 
 export default {
   name: "SettingsPage",
   components: {
-    ManageProducts
+    ManageProducts,
+    ManageUsers
   },
   data() {
     return {
