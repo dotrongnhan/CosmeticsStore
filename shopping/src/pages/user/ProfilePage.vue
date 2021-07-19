@@ -5,9 +5,9 @@
       <div class="row">
         <div class="col-md-4 pb-2">
           <div class="profile-img">
-            <img :src="user.avatar" alt="" v-show="user.avatar!='Avatar Link'"/>
-            <img src="https://i1.wp.com/www.baytekent.com/wp-content/uploads/2016/12/facebook-default-no-profile-pic1.jpg?ssl=1" alt="" v-show="user.gender==='Male'&&user.avatar=='Avatar Link'"/>
-            <img src="https://i.pinimg.com/originals/e0/5e/06/e05e061bfc4c6e7799de4aac293a8223.png" alt="" v-show="user.gender==='Female'&&user.avatar=='Avatar Link'"/>
+            <img :src="user.avatar" alt="" v-show="user.avatar!=''"/>
+            <img src="https://i1.wp.com/www.baytekent.com/wp-content/uploads/2016/12/facebook-default-no-profile-pic1.jpg?ssl=1" alt="" v-show="user.gender==='Male'&&user.avatar==''"/>
+            <img src="https://i.pinimg.com/originals/e0/5e/06/e05e061bfc4c6e7799de4aac293a8223.png" alt="" v-show="user.gender==='Female'&&user.avatar==''"/>
           </div>
         </div>
         <div class="col-md-6">
