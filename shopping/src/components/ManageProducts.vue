@@ -37,7 +37,7 @@
           @change="changePage"
       />
     </div>
-    <button type="button" class="ab-t-r mr-3 btn btn-primary">Add new</button>
+    <button @click="changeDisplay(true)" type="button" class="ab-t-r mr-3 btn btn-primary">Add new</button>
   </div>
   <table class="table table-striped">
     <thead>
@@ -62,7 +62,7 @@
       <td class="parentCenter">
         <div class="row center">
           <div class="col-6 flex-c">
-            <button type="button" class="btn btn-success">Edit</button>
+            <button @click="changeDisplay(true); changeProduct(product)" type="button" class="btn btn-success">Edit</button>
           </div>
           <div class="col-6 flex-c">
             <button @click="deleteProduct(product.id)" type="button" class="btn btn-danger">Delete</button>
@@ -72,7 +72,7 @@
     </tr>
     </tbody>
   </table>
-  <FormHandleProduct v-if="isDisplay" />
+  <FormHandleProduct :product="willChange" @updateProduct="changeDisplay" v-if="isDisplay" />
 </template>
 
 <script>
@@ -91,11 +91,12 @@ export default {
   },
   data() {
     return {
-      isDisplay: true,
+      isDisplay: false,
       value: {value: "Default"},
       direction: {value : "Default"},
       pageIndex: 1,
       limit: 16,
+      willChange: {}
     }
   },
   computed: {
@@ -107,6 +108,12 @@ export default {
   methods: {
     currency,
     ...mapActions("products", ["getProducts", "deleteProduct"]),
+    changeProduct(product) {
+      this.willChange = product
+    },
+    changeDisplay(value){
+      this.isDisplay = value
+    },
     sort(direction) {
       this.getProducts({category: this.value.value,sortType: direction.value, offset: 1})
       this.direction = direction
