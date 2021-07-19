@@ -52,7 +52,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		Address:     "Address",
 		DateOfBirth: "Dob",
 		Gender:      "Male",
-		Avatar:      "Avatar Link",
+		Avatar:      "",
 		RoleId:      uint(roleId),
 	}
 	_, err = stmt.Exec(user.FullName, user.Email, user.Password, user.Phone, user.Address, user.DateOfBirth, user.Gender, user.Avatar, user.RoleId)
