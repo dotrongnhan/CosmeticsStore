@@ -20,7 +20,7 @@
       <td class="parentCenter">
         <div class="row center">
           <div class="col-6 flex-c">
-            <button type="button" class="btn btn-success">Show more</button>
+            <button type="button" class="btn btn-success" @click="openForm">Show more</button>
           </div>
           <div class="col-6 flex-c">
             <button type="button" class="btn btn-danger">Delete</button>
@@ -30,23 +30,31 @@
     </tr>
     </tbody>
   </table>
+    <FormHandleUser v-show="isDisplayForm"/>
 </template>
 
 <script>
 import {mapActions, mapState} from "vuex";
+import FormHandleUser from "./FormHandleUser";
+
 export default {
     name: "ManageUsers",
-    data() {
-        
+    components: {
+      FormHandleUser
+    },
+    data() {       
     },
     created() {
         this.$store.dispatch("users/getUsers");
     },
     computed: {
-    ...mapState("users", ["users"]),
+    ...mapState("users", ["users", "isDisplayForm"]),
     },
     methods: {
     ...mapActions("users", ["getUsers"]),
+    openForm() {
+        this.$store.commit("users/displayForm");
+    }
     }
 }
 </script>
