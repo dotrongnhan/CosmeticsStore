@@ -13,6 +13,7 @@ const state = () => ({
   updateMessage: "",
   changePassMessage: "",
   isShowUserDropdown: false,
+  isDisplayForm: false,
 });
 
 const getters = {};
@@ -149,6 +150,13 @@ const mutations = {
     state.isRegisterSuccess = false;
     localStorage.removeItem("User");
   },
+  displayForm(state) {
+   if(state.isDisplayForm == false) {
+    state.isDisplayForm = true;
+   }else {
+     state.isDisplayForm = false;
+   }
+  }
 };
 
 export default {
