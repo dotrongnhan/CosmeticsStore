@@ -6,7 +6,6 @@
               class="header-icon1"
               style="width: 27px; border-radius: 50%"
               alt="Avatar"
-              v-show="user.avatar === 'Avatar Link'"
             />
       </router-link>     
     <div

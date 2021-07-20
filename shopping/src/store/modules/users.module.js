@@ -29,6 +29,17 @@ const actions = {
       console.log(e)
     }
   },
+  deleteUser: async ({commit}, id) => {
+    let decision = confirm("Are you sure you want to delete?");
+      if (decision === true) {
+    try {
+      await axios.delete(`users/${id}`, {withCredentials: true})
+      await commit('DELETE_USER', id)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  },
   async getUserExits({commit}) {
     try {
       const res = await axios.get("user", {withCredentials: true})
@@ -101,6 +112,10 @@ const actions = {
 const mutations = {
   GET_USERS (state, data) {
     state.users = data.Users
+  },
+  DELETE_USER(state, id) {
+    const index = state.users.findIndex(user => user.id === id)
+    state.users.splice(index, 1)    
   },
   setShowUserDropdown(state, status) {
     state.isShowUserDropdown = status;
