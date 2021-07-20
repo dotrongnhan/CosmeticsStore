@@ -24,7 +24,7 @@
                 <router-link to="/user/settings">Settings</router-link>
               </li>
               <li>
-                <a href="/" @click="logout()">Logout</a>
+                <router-link to="/" @click="logout()">Logout</router-link>
               </li>
             </ul>
           </div>
