@@ -39,6 +39,20 @@ const actions = {
     } catch (e) {
       console.log(e)
     }
+  },
+  createProduct: async ( _, product) => {
+    try {
+      await axios.post("products", product, {withCredentials: true})
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  updateProduct: async (_, payload) => {
+    try {
+      await axios.post(`products/${payload.id}`,payload.product, {withCredentials: true})
+    } catch (e) {
+      console.log(e)
+    }
   }
 };
 const mutations = {
@@ -55,7 +69,7 @@ const mutations = {
     },
   GET_PRODUCTS_BY_ID: (state, product) => {
     state.product = product
-  },
+  }
 };
 
 export default {
