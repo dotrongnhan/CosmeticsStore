@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const state = () => ({
   products: [],
   isLoading: false,
@@ -23,9 +25,34 @@ const getters = {
 };
 
 const actions = {
+  async getOrderItemsByUserId({ commit}, id) {
+    try {
+      const res = await axios.get(`orders/${id}`, {withCredentials: true});
+      commit("SET_PRODUCTS", res.data)
+    } catch (e) {
+      console.log(e);
+    }
+
+  },
+  async createOrderItem(_, props) {
+    console.log(props)
+    try {
+      const res = await axios.post('orders', props, {withCredentials: true});
+      console.log("register success" + res)
+      // commit("setRegisterSuccess", true);
+      // commit("setRegisterMessage", "");
+    } catch (e) {
+      console.log(e)
+      // commit("setRegisterMessage", e.message === "Request failed with status code 400" ? "Email already in use" : "Create new account is failed");
+      // commit("setRegisterSuccess", false);
+    }
+  },
 };
 
 const mutations = {
+  SET_PRODUCTS(state, products) {
+    state.products = products;
+  },
   setShowCartDropdown(state, status) {
     state.isShowCartDropdown = status;
   },
