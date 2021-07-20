@@ -1,65 +1,70 @@
 <template>
   <div id="myModal" class="modal">
     <div class="modal-content">
-      <h1>PRODUCT</h1>
-        <div class="profile-img">
-          <img :src="currentProduct.image" alt=""/>
+      <h1>{{product.id ? currentProduct.name : 'Add new product'}}</h1>
+      <div class="row">
+        <div class="col-4">
+          <div class="profile-img">
+            <h4>{{currentProduct.image ? '' :'Product\'s image'}}</h4>
+            <img :src="currentProduct.image" alt=""/>
+          </div>
         </div>
-      <div style="justify-content: center;display: flex" class="container">
-        <Form @submit.prevent="submit"  style="min-width: 65%;" :validation-schema="schema">
-          <div  class="bo4 of-hidden size15 m-b-5">
-            <Field
-                v-model="currentProduct.name"
-                name="name"
-                type="text"
-                placeholder="Product's name"
-                class="sizefull s-text7 p-l-22 p-r-22"
-            />
-          </div>
-          <ErrorMessage name="name" class="fs-18 text-danger d-block" />
-
-          <div class="bo4 of-hidden size15 m-b-5">
-            <Field
-                v-model="currentProduct.image"
-                name="image"
-                type="text"
-                placeholder="Product's image"
-                class="sizefull s-text7 p-l-22 p-r-22"
-            />
-          </div>
-          <ErrorMessage name="image" class="fs-18 text-danger d-block" />
-          <div class="row">
-            <div class="col-6">
-              <div class="bo4 of-hidden size15 m-b-5">
+        <div class="col-8">
+          <div class="container">
+            <Form :validation-schema="schema">
+              <div  class="bo4 of-hidden size15 m-b-5">
                 <Field
-                    v-model="currentProduct.price"
-                    name="price"
-                    type="number"
-                    placeholder="Product's price"
+                    v-model="currentProduct.name"
+                    name="name"
+                    type="text"
+                    placeholder="Product's name"
                     class="sizefull s-text7 p-l-22 p-r-22"
                 />
               </div>
-              <ErrorMessage name="price" class="fs-18 text-danger d-block" />
+              <ErrorMessage name="name" class="fs-18 text-danger d-block" />
 
-            </div>
-            <div class="col-6">
               <div class="bo4 of-hidden size15 m-b-5">
                 <Field
-                    v-model="currentProduct.numberAvailable"
-                    name="numberAvailable"
-                    type="number"
-                    placeholder="Product's number available"
+                    v-model="currentProduct.image"
+                    name="image"
+                    type="text"
+                    placeholder="Product's image"
                     class="sizefull s-text7 p-l-22 p-r-22"
                 />
               </div>
-              <ErrorMessage name="numberAvailable" class="fs-18 text-danger d-block" />
+              <ErrorMessage name="image" class="fs-18 text-danger d-block" />
+              <div class="row">
+                <div class="col-6">
+                  <div class="bo4 of-hidden size15 m-b-5">
+                    <Field
+                        v-model="currentProduct.price"
+                        name="price"
+                        type="number"
+                        placeholder="Product's price"
+                        class="sizefull s-text7 p-l-22 p-r-22"
+                    />
+                  </div>
+                  <ErrorMessage name="price" class="fs-18 text-danger d-block" />
 
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <Select2
-                  :options="[
+                </div>
+                <div class="col-6">
+                  <div class="bo4 of-hidden size15 m-b-5">
+                    <Field
+                        v-model="currentProduct.numberAvailable"
+                        name="numberAvailable"
+                        type="number"
+                        placeholder="Product's number available"
+                        class="sizefull s-text7 p-l-22 p-r-22"
+                    />
+                  </div>
+                  <ErrorMessage name="numberAvailable" class="fs-18 text-danger d-block" />
+
+                </div>
+              </div>
+              <div class="row m-b-5">
+                <div class="col-4">
+                  <Select2
+                      :options="[
                       { value: 'Default', label: 'Default category' },
                       { value: 'Toner', label: 'Toner' },
                       { value: 'Mask', label: 'Mask' },
@@ -67,37 +72,51 @@
                       { value: 'Face Scream', label: 'Face Scream' },
                       { value: 'Serum', label: 'Serum' },
                     ]"
-                  @change="categoryUpdate"
-                  :value="currentProduct.currentCategory"
-              />
-            </div><div class="col-4">
-              <Select2
-                  :options="[
+                      @change="categoryUpdate"
+                      :value="currentProduct.currentCategory"
+                  />
+                </div><div class="col-4">
+                <Select2
+                    :options="[
                       { value: '1', label: 'SK-II' },
                       { value: '2', label: 'MAC' },
                     ]"
-                  @change="brandUpdate"
-                  :value="currentProduct.currentBrand"/>
-            </div><div class="col-4">
-              <Select2
-                  :options="[
+                    @change="brandUpdate"
+                    :value="currentProduct.currentBrand"/>
+              </div><div class="col-4">
+                <Select2
+                    :options="[
                       { value: 0, label: 'Default status' },
                       { value: 1, label: 'Hot' },
                     ]"
-                  @change="statusUpdate"
-                  :value="currentProduct.currentStatus"/>
-            </div>
+                    @change="statusUpdate"
+                    :value="currentProduct.currentStatus"/>
+              </div>
+              </div>
+                <div class="bo4 of-hidden size15 m-b-5">
+                  <textarea
+                      v-model="currentProduct.description"
+                      style="border: none"
+                      type="text-area"
+                      name="description"
+                      placeholder="Product's number description"
+                      class="sizefull s-text7 p-l-22 p-r-22"
+                  />
+                </div>
+              <div style="margin-top: 20px" class="button row m-t-30" >
+                <div class="col-6">
+                  <button class="btn btn-outline-secondary" @click="close">Back</button>
+                </div>
+                <div class="col-6">
+                  <button class="btn btn-outline-success" @click="close; submit()">Submit</button>
+                </div>
+              </div>
+            </Form>
           </div>
-        </Form>
-      </div>
-      <div style="margin-top: 20px" class="button row m-t-30" >
-        <div class="col-6">
-          <button CLASS="btn btn-outline-secondary w-size2" @click="noConfirm">Back</button>
-        </div>
-        <div class="col-6">
-          <button class="btn btn-outline-success w-size2" type="submit" @click="yesConfirm">Submit</button>
         </div>
       </div>
+
+
     </div>
 
   </div>
@@ -107,6 +126,7 @@
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import Select2 from "./Select2";
+import {mapActions} from "vuex";
 
 export default {
   name: "FormHandleProduct",
@@ -116,11 +136,7 @@ export default {
     ErrorMessage,
     Select2
   },
-  computed: {
-
-  },
   mounted() {
-
       if (this.product.category_id === 1) {
         this.currentProduct.currentCategory = { value: 1, label: 'Face Scream' }
       } else if (this.product.category_id === 2) {
@@ -129,18 +145,14 @@ export default {
         this.currentProduct.currentCategory =  { value: 3, label: 'Toner' }
       } else if (this.product.category_id === 4) {
         this.currentProduct.currentCategory =  { value: 4, label: 'Mask' }
-      } else if (this.product.category_id === 5) {
-        this.currentProduct.currentCategory =  { value: 5, label: 'Lipstick' }
       } else {
-        this.currentProduct.currentCategory =  undefined
+        this.currentProduct.currentCategory =  { value: 5, label: 'Lipstick' }
       }
 
       if (this.product.brand_id === 1) {
         this.currentProduct.currentBrand = { value: '1', label: 'SK-II' }
-      } else if (this.product.brand_id === 2 ) {
-        this.currentProduct.currentBrand = { value: '2', label: 'MAC' }
       } else {
-        this.currentProduct.currentBrand = undefined
+        this.currentProduct.currentBrand = { value: '2', label: 'MAC' }
       }
 
       if(this.product.is_hot) {
@@ -175,16 +187,33 @@ export default {
         numberAvailable: this.product.number_available || 0,
         currentCategory: { value: 'Default', label: 'Default category' },
         currentBrand: { value: 1 , label: 'SK-II' },
-        currentStatus: { value: this.product.isHot, label: 'Default status' },
+        currentStatus: { value: 0, label: 'Default status' },
+        description: this.product.description
       }
     }
   },
   methods: {
-    noConfirm: function () {
-      this.$emit("updateProduct", false)
+    ...mapActions("products", ["createProduct", "getProducts", "updateProduct"])
+    ,
+    submit() {
+      const productSubmitted = {
+        product_name: this.currentProduct.name,
+        description : this.currentProduct.description,
+        price: this.currentProduct.price,
+        image: this.currentProduct.image,
+        is_hot: this.currentProduct.currentStatus.value,
+        category_id: this.currentProduct.currentCategory.value,
+        brand_id: Number(this.currentProduct.currentBrand.value),
+        number_available: this.currentProduct.numberAvailable
+      }
+      if (this.product.id) {
+        this.updateProduct({id: this.product.id, product: productSubmitted})
+      } else {
+        this.createProduct(productSubmitted).then(() => this.getProducts({}))
+      }
     },
-    yesConfirm: function () {
-      this.$emit("confirmDeleteItem", true)
+    close: function () {
+      this.$emit("close", false)
     },
     categoryUpdate(value) {
       this.currentProduct.currentCategory = value
@@ -209,7 +238,7 @@ export default {
   border-radius: 10px;
   cursor: pointer;
   height: 40px;
-  width: 400px;
+  width: 30%;
 }
 .modal {
   text-align: center;

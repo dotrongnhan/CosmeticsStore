@@ -72,7 +72,7 @@
     </tr>
     </tbody>
   </table>
-  <FormHandleProduct :product="willChange" @updateProduct="changeDisplay" v-if="isDisplay" />
+  <FormHandleProduct :product="willChange" @close="changeDisplay" v-if="isDisplay" />
 </template>
 
 <script>
@@ -112,6 +112,7 @@ export default {
       this.willChange = product
     },
     changeDisplay(value){
+      this.willChange = {}
       this.isDisplay = value
     },
     sort(direction) {
