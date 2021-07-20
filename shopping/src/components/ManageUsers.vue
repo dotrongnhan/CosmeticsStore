@@ -20,17 +20,17 @@
       <td class="parentCenter">
         <div class="row center">
           <div class="col-6 flex-c">
-            <button type="button" class="btn btn-success" @click="openForm">Show more</button>
+            <button type="button" class="btn btn-success" @click="openForm(); getUser(user)">Show details</button>
           </div>
           <div class="col-6 flex-c">
-            <button type="button" class="btn btn-danger">Delete</button>
+            <button type="button" class="btn btn-danger" @click="deleteUser(user.id)">Delete</button>
           </div>
         </div>
       </td>
     </tr>
     </tbody>
   </table>
-    <FormHandleUser v-show="isDisplayForm"/>
+    <FormHandleUser v-show="isDisplayForm" :user="user"/>
 </template>
 
 <script>
@@ -43,6 +43,9 @@ export default {
       FormHandleUser
     },
     data() {       
+    return {
+     user: {},
+    }
     },
     created() {
         this.$store.dispatch("users/getUsers");
@@ -51,10 +54,13 @@ export default {
     ...mapState("users", ["users", "isDisplayForm"]),
     },
     methods: {
-    ...mapActions("users", ["getUsers"]),
+    ...mapActions("users", ["getUsers", "deleteUser"]),
     openForm() {
         this.$store.commit("users/displayForm");
-    }
+    },
+    getUser(user) {
+      this.user = user
+    },
     }
 }
 </script>

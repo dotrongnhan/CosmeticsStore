@@ -2,18 +2,10 @@
   <div class="header-wrapicon2" @mouseover="toggleUserDropdown" @mouseleave="toggleUserUp">
       <router-link :to="isLoginSuccess ? '/user' : '/login'">
             <img
-              :src="defaultAvatar"
+              :src="user?.avatar ? user.avatar : defaultAvatar"
               class="header-icon1"
               style="width: 27px; border-radius: 50%"
               alt="Avatar"
-              v-show="user.avatar === 'Avatar Link'"
-            />
-            <img
-              :src="user.avatar"
-              class="header-icon1"
-              style="width: 27px; border-radius: 50%"
-              alt="Avatar"
-              v-show="user.avatar != 'Avatar Link'"
             />
       </router-link>     
     <div
