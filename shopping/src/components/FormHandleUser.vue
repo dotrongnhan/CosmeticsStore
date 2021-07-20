@@ -3,41 +3,41 @@
     <div class="modal-content">
         <div class="row">      
           <div class="profile-img">
-            <!-- <img :src="user.avatar" alt="" v-show="user.avatar!=''"/>
+            <img :src="user.avatar" alt="" v-show="user.avatar!=''"/>
             <img src="https://i1.wp.com/www.baytekent.com/wp-content/uploads/2016/12/facebook-default-no-profile-pic1.jpg?ssl=1" alt="" v-show="user.gender==='Male'&&user.avatar==''"/>
-            <img src="https://i.pinimg.com/originals/e0/5e/06/e05e061bfc4c6e7799de4aac293a8223.png" alt="" v-show="user.gender==='Female'&&user.avatar==''"/> -->
-            <img src="https://i1.wp.com/www.baytekent.com/wp-content/uploads/2016/12/facebook-default-no-profile-pic1.jpg?ssl=1" />
+            <img src="https://i.pinimg.com/originals/e0/5e/06/e05e061bfc4c6e7799de4aac293a8223.png" alt="" v-show="user.gender==='Female'&&user.avatar==''"/>
+            <!-- <img src="https://i1.wp.com/www.baytekent.com/wp-content/uploads/2016/12/facebook-default-no-profile-pic1.jpg?ssl=1" /> -->
           </div>
-          <h1>USER NAME</h1>
+          <h1>{{user.full_name}}</h1>
         </div>  
       <div style="display: flex;justify-content: center;" class="container p-t-66 p-b-60">
-       <form>
+       <form style="text-align: left;">
 
       <div class="primary-info">    
        <div>  
         <div class="mb-3">
           <label class="form-label fs-4">Email</label>
-          <p>Now</p>
+          <p>{{user.email}}</p>
         </div>
         <div class="mb-3">
           <label class="form-label fs-4">Phone</label>
-          <p>Now</p>
+          <p>{{user.phone}}</p>
         </div>
        </div>
        <div> 
         <div class="mb-3">
           <label class="form-label fs-4">Gender</label>
-          <p>Now</p>
+          <p>{{user.gender}}</p>
         </div>
         <div class="mb-3">
           <label class="form-label fs-4">Date of Birth</label>
-          <p>Now</p>
+          <p>{{user.date_of_birth}}</p>
         </div>
        </div>
       </div>  
         <div class="mb-3" style="float:left;">
           <label class="form-label fs-4">Address</label>
-          <p>Now</p>
+          <p>{{user.address}}</p>
         </div>                
       </form>   
       </div>
@@ -61,6 +61,7 @@ export default {
   //   Field,
   //   ErrorMessage
   // },
+  props : ['user'],
   data() {
     const schema = yup.object().shape({
       name: yup
