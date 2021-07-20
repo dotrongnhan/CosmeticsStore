@@ -13,9 +13,9 @@
       :class="{ 'show-header-dropdown': isShowUserDropdown && isLoginSuccess }"
     >
     <div class="dropdown-content">
-    <a href="/user/profile">Profile</a>
-    <a href="/user/settings">Settings</a>
-    <a href="/" @click="logout()">Sign out</a>
+    <router-link to="/user/profile">Profile</router-link>
+    <router-link to="/user/settings">Settings</router-link>
+    <router-link to="/" @click="logout()">Sign out</router-link>
   </div>
     </div>
   </div>
