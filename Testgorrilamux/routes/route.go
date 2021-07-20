@@ -48,11 +48,10 @@ func Setup(router *mux.Router) {
 	router.HandleFunc("/api/categories/{id}", handler.DeleteCategory).Methods("DELETE")
 
 	//orders
-	router.HandleFunc("/api/orders", handler.GetOrders).Methods("GET")
-	router.HandleFunc("/api/orders", handler.CreateOrder).Methods("POST")
-	router.HandleFunc("/api/orders/items", handler.CreateOrderItem).Methods("POST")
-	router.HandleFunc("/api/orders/{id}", handler.GetOrder).Methods("GET")
-	router.HandleFunc("/api/orders/{id}", handler.UpdateOrder).Methods("PUT")
-	router.HandleFunc("/api/orders/{id}", handler.DeleteOrder).Methods("DELETE")
-	router.HandleFunc("/api/orders/items/{id}", handler.DeleteOrderItem).Methods("DELETE")
+	router.HandleFunc("/api/orders", handler.GetOrderItems).Methods("GET")
+	router.HandleFunc("/api/orders", handler.CreateOrderItem).Methods("POST")
+	router.HandleFunc("/api/orders/{id}", handler.GetOrderItem).Methods("GET")
+	router.HandleFunc("/api/orders/user/{id}", handler.GetOrderItemsByUserId).Methods("GET")
+	router.HandleFunc("/api/orders/{id}", handler.UpdateOrderItem).Methods("PUT")
+	router.HandleFunc("/api/orders/{id}", handler.DeleteOrderItem).Methods("DELETE")
 }

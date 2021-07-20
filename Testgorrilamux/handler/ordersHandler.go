@@ -3,6 +3,7 @@ package handler
 import (
 	"Testgorillamux/models"
 	"Testgorillamux/repository"
+	"Testgorillamux/util"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -12,27 +13,27 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func GetOrders(w http.ResponseWriter, r *http.Request) {
+func GetOrderItems(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	// var orders []models.Order
-	result := repository.GetOrders()
+	result := repository.GetOrderItems()
 	json.NewEncoder(w).Encode(result)
 }
 
-func CreateOrder(w http.ResponseWriter, r *http.Request) {
+func GetOrderItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		err.Error()
-	}
-	var order models.Order
-	json.Unmarshal(body, &order)
-	errr := repository.CreateOrder(order)
-	if errr != nil {
-		fmt.Fprintln(w, "Cannot create Order!")
-	}
-	fmt.Fprintf(w, "New Order was created")
-	json.NewEncoder(w).Encode(order)
+	params := mux.Vars(r)
+	id, _ := strconv.Atoi(params["id"])
+	result := repository.GetOrderItem(id)
+	json.NewEncoder(w).Encode(result)
+}
+
+func GetOrderItemsByUserId(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	id, _ := strconv.Atoi(params["id"])
+	result := repository.GetOrderItemsByUserId(id)
+	json.NewEncoder(w).Encode(result)
 }
 
 func CreateOrderItem(w http.ResponseWriter, r *http.Request) {
@@ -41,8 +42,23 @@ func CreateOrderItem(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		err.Error()
 	}
-	var orderItem models.OrderItem
-	json.Unmarshal(body, &orderItem)
+	var id string
+	var userId int
+	cookie, _ := r.Cookie("userId")
+	if cookie == nil {
+		userId = 0
+	} else {
+		id, _ = util.ParseJwt(cookie.Value)
+		userId, _ = strconv.Atoi(id)
+	}
+	var data map[string]uint
+	json.Unmarshal(body, &data)
+	orderItem := models.OrderItem{
+		UserId:    uint(userId),
+		ProductId: data["product_id"],
+		Quantity:  data["quantity"],
+		IsPaid:    int(data["is_paid"]),
+	}
 	errr := repository.CreateOrderItem(orderItem)
 	if errr != nil {
 		fmt.Fprintln(w, "Cannot create Order!")
@@ -51,15 +67,7 @@ func CreateOrderItem(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(orderItem)
 }
 
-func GetOrder(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	params := mux.Vars(r)
-	id, _ := strconv.Atoi(params["id"])
-	result := repository.GetOrder(id)
-	json.NewEncoder(w).Encode(result)
-}
-
-func UpdateOrder(w http.ResponseWriter, r *http.Request) {
+func UpdateOrderItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 	id, _ := strconv.Atoi(params["id"])
@@ -67,24 +75,14 @@ func UpdateOrder(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		err.Error()
 	}
-	var order models.Order
-	json.Unmarshal(body, &order)
-	errr := repository.UpdateOrder(order, id)
+	var orderItem models.OrderItem
+	json.Unmarshal(body, &orderItem)
+	errr := repository.UpdateOrderItem(orderItem, id)
 	if errr != nil {
 		fmt.Fprintln(w, "Cannot update order!")
 	}
-	json.NewEncoder(w).Encode(order)
+	json.NewEncoder(w).Encode(orderItem)
 	fmt.Fprintf(w, "order with ID = %s was updated", params["id"])
-}
-
-func DeleteOrder(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id, _ := strconv.Atoi(params["id"])
-	errr := repository.DeleteOrder(id)
-	if errr != nil {
-		fmt.Fprintln(w, "Cannot delete order!")
-	}
-	fmt.Fprintf(w, "order with ID = %s was deleted", params["id"])
 }
 
 func DeleteOrderItem(w http.ResponseWriter, r *http.Request) {
