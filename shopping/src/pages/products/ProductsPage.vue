@@ -86,7 +86,7 @@
 
                           <div class="block2-btn-addcart w-size1 trans-0-4">
                             <button
-                                @click="addToCart(product)"
+                                @click="createOrderItem(product)"
                               class="
                                 flex-c-m
                                 size1
@@ -166,8 +166,15 @@ export default {
       this.$store.commit('products/GET_PRODUCT_BY_CATEGORY', value)
       this.value = value
     },
-    addToCart(product) {
-      this.$store.commit('cart/addProductToCart', {product: product, quantity: 1})
+    // addToCart(product) {
+    //   this.$store.commit('cart/addProductToCart', {product: product, quantity: 1})
+    // },
+    createOrderItem(product) {
+      this.$store.dispatch("cart/createOrderItem", {
+          product_id: product.id,
+          quantity: 1,
+          is_paid: 0
+          });    
     },
     changePage(value) {
       this.pageIndex = value
