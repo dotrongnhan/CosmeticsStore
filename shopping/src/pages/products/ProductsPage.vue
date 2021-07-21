@@ -86,7 +86,7 @@
 
                           <div class="block2-btn-addcart w-size1 trans-0-4">
                             <button
-                                @click="createOrderItem(product)"
+                                @click="updateOrder(product)"
                               class="
                                 flex-c-m
                                 size1
@@ -155,6 +155,7 @@ export default {
   methods: {
     currency,
     ...mapActions("products", ["getProducts"]),
+    ...mapActions("cart", ["updateCart"]),
     ...mapMutations("products", ["GET_PRODUCT_BY_CATEGORY"]),
     sort(direction) {
       this.getProducts({category: this.value.value,sortType: direction.value, offset: 1})
@@ -166,23 +167,18 @@ export default {
       this.$store.commit('products/GET_PRODUCT_BY_CATEGORY', value)
       this.value = value
     },
-    // addToCart(product) {
-    //   this.$store.commit('cart/addProductToCart', {product: product, quantity: 1})
-    // },
-    createOrderItem(product) {
-      this.$store.dispatch("cart/createOrderItem", {
-          product_id: product.id,
-          quantity: 1,
-          is_paid: 0
-          });    
-    },
     changePage(value) {
       this.pageIndex = value
       this.$store.dispatch("products/getProducts", {category: this.value.value,sortType: this.direction.value ,offset: value});
+    },
+    updateOrder(product) {
+      this.updateCart({userId: this.user.id, product: product, quantity: 1})
     }
+
   },
   computed: {
     ...mapState("products", ["products", "count"]),
+    ...mapState("users", ["user"]),
     currentCategory() {
       return this.$store.state.products.category
     }

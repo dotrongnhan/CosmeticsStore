@@ -39,10 +39,7 @@
                         eff2
                       "
                       @click="
-                        updateProductQuantity({
-                          productId: product.id,
-                          value: product.quantity - 1,
-                        })
+                        changeCart(product, -1)
                       "
                     >
                       <i class="fs-12 fa fa-minus" aria-hidden="true"></i>
@@ -63,12 +60,7 @@
 
                     <button
                       class="btn-num-product-up color1 flex-c-m size7 bg8 eff2"
-                      @click="
-                        updateProductQuantity({
-                          productId: product.id,
-                          value: product.quantity + 1,
-                        })
-                      "
+                      @click="changeCart(product, 1)"
                     >
                       <i class="fs-12 fa fa-plus" aria-hidden="true"></i>
                     </button>
@@ -76,7 +68,7 @@
                 </td>
                 <td class="column-5 t-center">{{ currency(product.quantity * Number(product.product.price)) }}</td>
                 <td class="column-1">
-                  <button @click="deleteProduct(product)" class="flex-c-m w-50 bg1 bo-rad-8 hov1 s-text1 trans-0-4">
+                  <button @click="deleteOrderItem(product.id)" class="flex-c-m w-50 bg1 bo-rad-8 hov1 s-text1 trans-0-4">
                     X
                   </button>
                 </td>
@@ -99,7 +91,7 @@
 </template>
 
 <script>
-import {mapState, mapMutations, mapGetters} from "vuex";
+import {mapState, mapMutations, mapGetters, mapActions} from "vuex";
 import { currency } from "@/utils/currency";
 import CartTotals from "./CartTotals.vue";
 
@@ -113,14 +105,17 @@ export default {
   computed: {
     ...mapState("cart", ["products", "isLoading"]),
     ...mapGetters("cart", ["subTotal"]),
+    ...mapState("users", ["user"])
   },
 
   methods: {
     currency,
     ...mapMutations("cart", ["updateProductQuantity"]),
-    deleteProduct(data) {
-      console.log(data)
-      this.updateProductQuantity({productId: data.product.id, value: -data.value})
+    ...mapActions("cart", ["updateCart", "deleteOrderItem"]),
+    changeCart(data, quantity) {
+      console.log(quantity)
+      this.updateCart({userId: this.user.id, product: data.product, quantity: quantity})
+
     }
   },
 };

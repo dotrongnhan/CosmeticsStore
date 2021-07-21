@@ -39,17 +39,20 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import {mapMutations, mapState} from "vuex";
 
 export default {
   name: "UserPage",
 
   computed: {
     ...mapState("users", ["isLoginSuccess", "user"]),
+    ...mapMutations("cart", ["REMOVE_CART"])
 },
   methods: {
     logout() {
-      this.$store.dispatch("users/logout");
+      this.$store.dispatch("users/logout")
+      .then(() => this.REMOVE_CART())
+
     },
   },
 };

@@ -140,7 +140,7 @@
 </template>
 
 <script>
-import {mapMutations, mapState} from "vuex";
+import {mapActions, mapMutations, mapState} from "vuex";
 import { currency } from "@/utils/currency";
 import ProductsCarousel from "@/components/ProductsCarousel.vue";
 import router from "../../router";
@@ -156,18 +156,19 @@ export default {
       quantity: 1
     };
   },
-  computed: mapState("products", ["products", "product"]),
+  computed: {
+    ...mapState("products", ["products", "product"]),
+    ...mapState("users", ["user"])
+  },
   created() {
     this.$store.dispatch("products/getProductById", this.$route.params.id);
   },
   methods: {
     currency,
+    ...mapActions("cart", ["updateCart"]),
     ...mapMutations("cart", ["addProductToCart"]),
     submitNewProduct(product) {
-      this.addProductToCart({
-        product: product,
-        quantity: this.quantity
-      })
+      this.updateCart({userId: this.user.id, product: product, quantity: this.quantity})
       router.push('/products')
     },
     updateQuantityProduct(number) {

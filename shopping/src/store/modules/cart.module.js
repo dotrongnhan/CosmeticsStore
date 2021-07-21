@@ -32,24 +32,43 @@ const actions = {
     } catch (e) {
       console.log(e);
     }
-
   },
-  async createOrderItem(_, props) {
-    console.log(props)
+  async updateCart({commit}, {userId, product, quantity, replace = "", isPaid = 0}) {
+      try {
+        const res = await axios.post("order/upsert", {user_id: userId, product_id: product.id, quantity: quantity, replace: replace, is_paid: isPaid})
+        console.log("ok", res)
+        if (replace === "") {
+          commit("addProductToCart", {product: product, quantity: quantity})
+        }
+      } catch (e) {
+        console.log(e)
+      }
+  },
+  async getCartById({commit}, id) {
     try {
-      const res = await axios.post('orders', props, {withCredentials: true});
-      console.log("register success" + res)
-      // commit("setRegisterSuccess", true);
-      // commit("setRegisterMessage", "");
+      const res = await axios.get(`/orders/user/${id}`)
+      commit("CALL_CART_FROM_SV", res.data)
+      console.log(res)
     } catch (e) {
       console.log(e)
-      // commit("setRegisterMessage", e.message === "Request failed with status code 400" ? "Email already in use" : "Create new account is failed");
-      // commit("setRegisterSuccess", false);
     }
   },
+  async deleteOrderItem({commit}, id) {
+    try {
+      const res = axios.delete(`/orders/${id}`)
+      console.log(res)
+      commit("REMOVE_ORDER", id)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
 };
 
 const mutations = {
+  CALL_CART_FROM_SV(state, cart) {
+      state.products = cart
+  },
   SET_PRODUCTS(state, products) {
     state.products = products;
   },
@@ -79,6 +98,13 @@ const mutations = {
       state.products[isExist].quantity = state.products[isExist].quantity + quantity
     }
   },
+  REMOVE_ORDER(state, id) {
+    state.products = state.products.filter(product => product.id !== id)
+  },
+  REMOVE_CART(state) {
+    state.products = []
+    state.totalItems = 0
+  }
 };
 
 export default {

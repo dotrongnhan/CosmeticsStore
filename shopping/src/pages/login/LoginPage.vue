@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import {mapActions, mapState} from "vuex";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
@@ -115,7 +115,7 @@ export default {
     };
   },
 
-  computed: mapState("users", ["isLoginSuccess", "loginMessage"]),
+  computed: mapState("users", ["isLoginSuccess", "loginMessage", "user"]),
 
   created() {
     if (this.isLoginSuccess) {
@@ -125,12 +125,18 @@ export default {
   },
 
   methods: {
+    ...mapActions("cart", ["getOrderItemsByUserId"]),
     login() {
       this.isLoading = true;
       this.$store.dispatch("users/login", {
         email: this.user.email,
         password: this.user.password,
-      }).then(() => {
+      })
+          .then(() => {
+            console.log(this.$store.state.users.user.id)
+            this.getOrderItemsByUserId(this.$store.state.users.user.id)
+      })
+          .then(() => {
         this.isLoading = false;
         if (this.isLoginSuccess) {
           this.$router.push("/");

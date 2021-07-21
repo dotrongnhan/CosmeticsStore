@@ -142,15 +142,16 @@ export default {
     this.getProducts({})
     if (getCookie("jwt")) {
       this.getUserExits()
+      .then(() => this.getCartById(this.user.id))
+
     }
   },
-
   computed: mapState("users", ["isLoginSuccess", "user"]),
-
   methods: {
     getCookie,
     ...mapActions("users",["getUserExits"]),
     ...mapActions("products", ["getProducts"]),
+    ...mapActions("cart", ["getCartById"]),
     ...mapMutations("users", ["updateUser"]),
     toggleMenuMobileDropdown() {
       this.isShowMenuMobileDropdown = !this.isShowMenuMobileDropdown;

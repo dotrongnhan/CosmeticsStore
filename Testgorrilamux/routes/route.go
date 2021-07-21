@@ -54,4 +54,5 @@ func Setup(router *mux.Router) {
 	router.HandleFunc("/api/orders/user/{id}", handler.GetOrderItemsByUserId).Methods("GET")
 	router.HandleFunc("/api/orders/{id}", handler.UpdateOrderItem).Methods("PUT")
 	router.HandleFunc("/api/orders/{id}", handler.DeleteOrderItem).Methods("DELETE")
+	router.HandleFunc("/api/order/upsert", handler.UpSertOrder).Methods("POST")
 }
