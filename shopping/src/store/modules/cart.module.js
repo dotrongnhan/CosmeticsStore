@@ -4,7 +4,6 @@ const state = () => ({
   products: [],
   isLoading: false,
   addToCartResult: "",
-  totalItems: 0,
   isShowCartDropdown: false,
 });
 
@@ -25,14 +24,6 @@ const getters = {
 };
 
 const actions = {
-  async getOrderItemsByUserId({ commit}, id) {
-    try {
-      const res = await axios.get(`orders/${id}`, {withCredentials: true});
-      commit("SET_PRODUCTS", res.data)
-    } catch (e) {
-      console.log(e);
-    }
-  },
   async updateCart({commit}, {userId, product, quantity, replace = "", isPaid = 0}) {
       try {
         const res = await axios.post("order/upsert", {user_id: userId, product_id: product.id, quantity: quantity, replace: replace, is_paid: isPaid})
@@ -103,7 +94,6 @@ const mutations = {
   },
   REMOVE_CART(state) {
     state.products = []
-    state.totalItems = 0
   }
 };
 

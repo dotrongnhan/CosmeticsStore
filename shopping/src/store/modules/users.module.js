@@ -65,9 +65,12 @@ const actions = {
     }
   },
   async logout({ commit}){
-    await axios.post("logout","hello", {withCredentials: true});
-    await commit("logout")
-    
+    try {
+      await axios.post("logout","hello", {withCredentials: true});
+      await commit("logout")
+    } catch (e) {
+      console.log(e)
+    }
 },
 
   async register({ commit }, user) {

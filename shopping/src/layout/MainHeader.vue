@@ -21,18 +21,8 @@
         </div>
 
         <div class="header-icons">
-          <!-- <router-link :to="isLoginSuccess ? '/user' : '/login'">
-            <img
-              :src="user?.avatar ? user.avatar : defaultAvatar"
-              class="header-icon1"
-              style="width: 27px; border-radius: 50%"
-              alt="Avatar"
-            />
-          </router-link> -->
           <HeaderUserDropdown />
-
           <span class="linedivide1"></span>
-
           <HeaderCartDropdown />
         </div>
       </div>

@@ -50,12 +50,7 @@
                       type="number"
                       name="num-product1"
                       :value="product.quantity"
-                      @input="
-                        updateProductQuantity({
-                          productId: product.id,
-                          value: $event.target.value,
-                        })
-                      "
+                      disabled
                     />
 
                     <button
@@ -110,10 +105,12 @@ export default {
 
   methods: {
     currency,
+    go(a) {
+      console.log(a)
+    },
     ...mapMutations("cart", ["updateProductQuantity"]),
     ...mapActions("cart", ["updateCart", "deleteOrderItem"]),
     changeCart(data, quantity) {
-      console.log(quantity)
       this.updateCart({userId: this.user.id, product: data.product, quantity: quantity})
 
     }
