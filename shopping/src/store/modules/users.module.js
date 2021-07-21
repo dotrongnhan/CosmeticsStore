@@ -163,9 +163,14 @@ const mutations = {
     state.user = {};
     state.isLoginSuccess = false;
     state.isRegisterSuccess = false;
+    localStorage.removeItem("User");
   },
   displayForm(state) {
-    state.isDisplayForm = !state.isDisplayForm
+   if(state.isDisplayForm == false) {
+    state.isDisplayForm = true;
+   }else {
+     state.isDisplayForm = false;
+   }
   }
 };
 
