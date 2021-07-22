@@ -15,9 +15,7 @@ func Setup(router *mux.Router) {
 	router.HandleFunc("/api/products/{id}", handler.GetProduct).Methods("GET")
 	router.HandleFunc("/api/products/cate/{category_name}", handler.GetProductByCategoryName).Methods("GET")
 	router.HandleFunc("/api/products/brand/{brand_name}", handler.GetProductByBrandName).Methods("GET")
-	// s := router.PathPrefix("").Subrouter()
-	// s.Use(middlewares.JwtVerify)
-	// router.Use(middlewares.JwtVerify)
+
 	router.HandleFunc("/api/products", middlewares.JwtVerify(handler.CreateProduct)).Methods("POST")
 	router.HandleFunc("/api/products/{id}", middlewares.JwtVerify(handler.UpdateProduct)).Methods("PUT")
 	router.HandleFunc("/api/products/{id}", middlewares.JwtVerify(handler.DeleteProduct)).Methods("DELETE")
@@ -48,11 +46,11 @@ func Setup(router *mux.Router) {
 	router.HandleFunc("/api/categories/{id}", handler.DeleteCategory).Methods("DELETE")
 
 	//orders
-	router.HandleFunc("/api/orders", handler.GetOrderItems).Methods("GET")
+	router.HandleFunc("/api/orders", middlewares.JwtVerify(handler.GetOrderItems)).Methods("GET")
 	router.HandleFunc("/api/orders", handler.CreateOrderItem).Methods("POST")
 	router.HandleFunc("/api/orders/{id}", handler.GetOrderItem).Methods("GET")
 	router.HandleFunc("/api/orders/user/{id}", handler.GetOrderItemsByUserId).Methods("GET")
 	router.HandleFunc("/api/orders/{id}", handler.UpdateOrderItem).Methods("PUT")
-	router.HandleFunc("/api/orders/{id}", handler.DeleteOrderItem).Methods("DELETE")
+	router.HandleFunc("/api/orders/{id}", middlewares.JwtVerify(handler.DeleteOrderItem)).Methods("DELETE")
 	router.HandleFunc("/api/order/upsert", handler.UpSertOrder).Methods("POST")
 }
