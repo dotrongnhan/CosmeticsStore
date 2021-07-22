@@ -35,8 +35,6 @@
         Proceed to Checkout
       </button>
     </div>
-    <div>    <div id="paypal-button-container"></div>
-    </div>
   </div>
 </template>
 

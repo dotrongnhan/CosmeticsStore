@@ -9,7 +9,7 @@ const routes = [
   { path: "/cart", component: () => import("../pages/cart/CartPage") },
   { path: "/login", component: () => import("../pages/login/LoginPage") },
   { path: "/register", component: () => import("../pages/register/RegisterPage") },
-  { path: "/payment", component: () => import("../pages/payment/Payment")},
+  { path: "/checkout", component: () => import("../pages/checkout/Checkout")},
   { path: "/confirm-checkout", component: () => import("../pages/confirm-checkout/ConfirmCheckout")},
   {
     path: "/user",
