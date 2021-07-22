@@ -125,7 +125,7 @@ export default {
   },
 
   methods: {
-    ...mapActions("cart", ["getOrderItemsByUserId"]),
+    ...mapActions("cart", ["getCartById"]),
     login() {
       this.isLoading = true;
       this.$store.dispatch("users/login", {
@@ -133,8 +133,7 @@ export default {
         password: this.user.password,
       })
           .then(() => {
-            console.log(this.$store.state.users.user.id)
-            this.getOrderItemsByUserId(this.$store.state.users.user.id)
+            this.getCartById(this.$store.state.users.user.id)
       })
           .then(() => {
         this.isLoading = false;

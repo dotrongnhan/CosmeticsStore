@@ -103,7 +103,7 @@
                         </div>
                       </div>
 
-                      <div class="block2-txt p-t-20">
+                      <div class="block2-txt p-t-20 t-center">
                         <router-link
                           :to="'/products/' + product.id"
                           @click="this.$store.dispatch(products.products/getProductById(id))"

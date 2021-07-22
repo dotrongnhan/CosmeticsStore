@@ -5,14 +5,12 @@ const state = () => ({
   count: 0,
   product: {},
   search: "",
-  category: { value: 'default', label: 'Default category' },
+  category: { value: 'Default', label: 'Default category' },
   sort: 0,
 });
 
 const getters = {
-  currentCategory: state => {
-    return state.category
-  }
+
 };
 
 const actions = {

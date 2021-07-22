@@ -15,7 +15,7 @@
     <div class="dropdown-content">
     <router-link to="/user/profile">Profile</router-link>
     <router-link to="/user/settings">Settings</router-link>
-    <router-link to="/" @click="logout()">Sign out</router-link>
+    <router-link to="/" @click="logoutApp()">Sign out</router-link>
   </div>
     </div>
   </div>
@@ -38,16 +38,18 @@ export default {
   },
 
   methods: {
-    ...mapActions("users",["getUserExits"]),
-    ...mapMutations("users", ["updateUser"]),
+    ...mapActions("users",["getUserExits", "logout"]),
+    ...mapMutations("cart", ["REMOVE_CART"]),
+    ...mapMutations("users", ["setShowUserDropdown"]),
     toggleUserDropdown() {
-      this.$store.commit("users/setShowUserDropdown", true);
+      this.setShowUserDropdown(true);
     },
     toggleUserUp() {
-      this.$store.commit("users/setShowUserDropdown", false);
+      this.setShowUserDropdown(false);
     },
-    logout() {
-      this.$store.dispatch("users/logout");
+    logoutApp() {
+      this.logout()
+      .then(() => this.REMOVE_CART())
     },
     currency,
   },

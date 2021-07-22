@@ -35,11 +35,14 @@
         Proceed to Checkout
       </button>
     </div>
+    <div>    <div id="paypal-button-container"></div>
+    </div>
   </div>
 </template>
 
 <script>
 import { currency } from "@/utils/currency";
+
 
 export default {
   name: "CartTotals",
@@ -47,8 +50,54 @@ export default {
   props: {
     subTotal: Number,
   },
+  data() {
+    return {
+      loaded: false,
+      paidFor: false,
+      product: {
+        price: 100,
+        description: "gi gi do",
+        img: "https://scontent-hkg4-1.xx.fbcdn.net/v/t1.6435-9/196437483_838057373517144_5524917560022717507_n.jpg?_nc_cat=107&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=3ifrj73xS0kAX_11YwU&_nc_ht=scontent-hkg4-1.xx&oh=b4a8c153c5e31a3de79c0cc7eaae4e5b&oe=60FCD11D",
+      }
+    }
+  },
+  mounted() {
+    const script = document.createElement("script")
+    script.src =
+        "https://www.paypal.com/sdk/js?client-id=AbTnXKHy0QyzQb-I6J9JxIeVYJGmcnc8HblkL5ycQjAuo6epSNptQtxUjF0bRhmfhboY0Z0--nubE1RH&currency=USD"
+    script.addEventListener("load", this.setLoaded)
+    document.body.appendChild(script)
+  },
   methods: {
     currency,
+    setLoaded: function() {
+      this.loaded = true;
+      window.paypal
+          .Buttons({
+            createOrder: (data, actions) => {
+              return actions.order.create({
+                purchase_units: [
+                  {
+                    description: this.product.description,
+                    amount: {
+                      currency_code: "USD",
+                      value: this.product.price
+                    }
+                  }
+                ]
+              });
+            },
+            onApprove: async (data, actions) => {
+              const order = await actions.order.capture();
+              this.paidFor = true;
+              console.log(order);
+            },
+            onError: err => {
+              console.log(err);
+            }
+          })
+          .render('#paypal-button-container');
+    }
   },
 };
 </script>
