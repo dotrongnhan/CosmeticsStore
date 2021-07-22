@@ -5,142 +5,159 @@
       <div class="col-md-4 order-md-2 mb-4">
         <h4 class="d-flex justify-content-between align-items-center mb-3">
           <span class="text-muted">Your cart</span>
-          <span class="badge badge-secondary badge-pill">3</span>
+          <span class="badge badge-secondary badge-pill">{{totalItems}}</span>
         </h4>
         <ul class="list-group mb-3">
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-              <h6 class="my-0">Product name</h6>
-              <small class="text-muted">Brief description</small>
+          <li v-for="product in products" :key="product.id" class="list-group-item d-flex justify-content-between lh-condensed">
+            <div class="row">
+              <div class="col-3">
+                <img :src="product.product.image" style="width: 100%" alt="">
+              </div>
+              <div class="col-6">
+                <p>{{`${product.product.product_name} x ${product.quantity}`}}</p>
+              </div>
+              <div class="col-3">
+                <p>{{currency(product.product.price * product.quantity)}}</p>
+              </div>
             </div>
-            <span class="text-muted">$12</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-              <h6 class="my-0">Second product</h6>
-              <small class="text-muted">Brief description</small>
-            </div>
-            <span class="text-muted">$8</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-              <h6 class="my-0">Third item</h6>
-              <small class="text-muted">Brief description</small>
-            </div>
-            <span class="text-muted">$5</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between bg-light">
-            <div class="text-success">
-              <h6 class="my-0">Promo code</h6>
-              <small>EXAMPLECODE</small>
-            </div>
-            <span class="text-success">-$5</span>
           </li>
           <li class="list-group-item d-flex justify-content-between">
             <span>Total (USD)</span>
-            <strong>$20</strong>
+            <strong>{{currency(subTotal)}}</strong>
           </li>
         </ul>
       </div>
       <div class="col-md-8 order-md-1">
         <h4 class="mb-3">Billing address</h4>
-        <form class="needs-validation" novalidate>
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="firstName">First name</label>
-              <input type="text" class="form-control" id="firstName" placeholder="" required>
-              <div class="invalid-feedback">
-                Valid first name is required.
-              </div>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="lastName">Last name</label>
-              <input type="text" class="form-control" id="lastName" placeholder="" value="" required>
-              <div class="invalid-feedback">
-                Valid last name is required.
-              </div>
-            </div>
-          </div>
-
+        <Form class="needs-validation" :validation-schema="schema">
           <div class="mb-3">
-            <label for="username">Username</label>
+            <label for="username">Full name</label>
             <div class="input-group">
-              <input type="text" class="form-control" id="username" placeholder="Username" required>
-              <div class="invalid-feedback" style="width: 100%;">
-                Your username is required.
-              </div>
+              <Field v-model="infor.fullName" type="text" class="form-control" name="fullname" id="username" placeholder="Full name" />
             </div>
+            <ErrorMessage name="fullname" class="text-danger d-block" />
           </div>
-
-          <div class="mb-3">
+            <div class="mb-1">
+              <label for="phone">Phone</label>
+              <div class="input-group">
+                <Field v-model="infor.phone" type="text" class="form-control" name="phone" id="phone" placeholder="Phone" />
+              </div>
+              <ErrorMessage name="phone" class="text-danger d-block" />
+            </div>
+          <div class="mb-1">
             <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" placeholder="you@example.com">
-            <div class="invalid-feedback">
-              Please enter a valid email address for shipping updates.
+            <div class="input-group">
+              <Field v-model="infor.email" type="email" class="form-control" name="email" id="email" placeholder="you@example.com"/>
             </div>
+            <ErrorMessage name="email" class="text-danger d-block" />
           </div>
 
-          <div class="mb-3">
+          <div class="mb-1">
             <label for="address">Address</label>
-            <input type="text" class="form-control" id="address" placeholder="1234 Main St" required>
-            <div class="invalid-feedback">
-              Please enter your shipping address.
-            </div>
+            <Field v-model="infor.address" type="text" class="form-control" name="address" id="address" placeholder="1234 Main St" />
+            <ErrorMessage name="address" class="text-danger d-block" />
           </div>
-          <h4 class="mb-3">Payment <span>Credit card</span></h4>
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="cc-name">Name on card</label>
-              <input type="text" class="form-control" id="cc-name" placeholder="" required>
-              <small class="text-muted">Full name as displayed on card</small>
-              <div class="invalid-feedback">
-                Name on card is required
-              </div>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="cc-number">Credit card number</label>
-              <input type="text" class="form-control" id="cc-number" placeholder="" required>
-              <div class="invalid-feedback">
-                Credit card number is required
-              </div>
-            </div>
+          <h4 class="mb-1">Payment</h4>
+          <div v-show="infor.fullName !=='' && infor.address !== '' && infor.email!=='' && infor.phone !=='' ">
+            <div class="text-center s-text20 font-weight-bold mb-3">Please pay to complete checkout</div>
+            <div class="d-flex justify-content-center" id="paypal-button-container"></div>
           </div>
-          <div class="row">
-            <div class="col-md-3 mb-3">
-              <label for="cc-expiration">Expiration</label>
-              <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
-              <div class="invalid-feedback">
-                Expiration date required
-              </div>
-            </div>
-            <div class="col-md-3 mb-3">
-              <label for="cc-cvv">CVV</label>
-              <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
-              <div class="invalid-feedback">
-                Security code required
-              </div>
-            </div>
-          </div>
-          <hr class="mb-4">
-          <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
-        </form>
+          <div v-if="infor.fullName ==='' || infor.address === '' || infor.email==='' || infor.phone ==='' " class="text-center text-warning">Please fill in the recipient's information</div>
+        </Form>
       </div>
     </div>
-
-    <footer class="my-5 pt-5 text-muted text-center text-small">
-      <p class="mb-1">&copy; 2017-2019 Company Name</p>
-      <ul class="list-inline">
-        <li class="list-inline-item"><a href="#">Privacy</a></li>
-        <li class="list-inline-item"><a href="#">Terms</a></li>
-        <li class="list-inline-item"><a href="#">Support</a></li>
-      </ul>
-    </footer>
   </div>
 </template>
 
 <script>
+import {mapGetters, mapState} from "vuex";
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
+import {currency} from "../../utils/currency";
+
 export default {
-  name: "Checkout"
+  name: "Checkout",
+  components: {
+    Form,
+    Field,
+    ErrorMessage,
+  },
+  mounted() {
+    const script = document.createElement("script")
+    script.src =
+        "https://www.paypal.com/sdk/js?client-id=AbTnXKHy0QyzQb-I6J9JxIeVYJGmcnc8HblkL5ycQjAuo6epSNptQtxUjF0bRhmfhboY0Z0--nubE1RH&currency=USD"
+    script.addEventListener("load", this.setLoaded)
+    document.body.appendChild(script)
+  },
+  data() {
+    const schema = yup.object().shape({
+      email: yup
+          .string()
+          .required("Email is required!")
+          .email("Email is invalid!"),
+      fullname: yup
+          .string()
+          .required("Full name is required!"),
+      phone: yup
+          .string()
+          .required("Phone is required"),
+      address: yup
+          .string()
+          .required("Address is required")
+    });
+
+    return {
+      schema,
+      loaded: false,
+      paidFor: false,
+      infor: {
+        fullName: "",
+        phone: "",
+        address: "",
+        email: ""
+      }
+    };
+  },
+  computed: {
+    ...mapState("cart", ["products"]),
+    ...mapGetters("cart", ["totalItems","subTotal"])
+  },
+  methods: {
+    currency,
+    setLoaded: function() {
+      this.loaded = true;
+      window.paypal
+          .Buttons({
+            createOrder: (data, actions) => {
+              return actions.order.create({
+                purchase_units: [
+                  {
+                    description: "this is description",
+                    amount: {
+                      currency_code: "USD",
+                      value: this.subTotal
+                    },
+                    style: {
+                      size: 'large',
+                      color: 'gold',
+                      shape: 'pill',
+                    },
+                  }
+                ]
+              });
+            },
+            onApprove: async (data, actions) => {
+              const order = await actions.order.capture();
+              this.paidFor = true;
+              console.log(order);
+            },
+            onError: err => {
+              console.log(err);
+            }
+          })
+          .render('#paypal-button-container');
+    }
+  }
 }
 </script>
 
