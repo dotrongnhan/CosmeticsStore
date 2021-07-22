@@ -140,7 +140,7 @@
 
 <script>
 export default {
-  name: "Payment"
+  name: "Checkout"
 }
 </script>
 
