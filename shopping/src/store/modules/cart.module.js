@@ -1,9 +1,12 @@
 import axios from "axios";
 
 const state = () => ({
+  allProducts: [],
+  customerProducts: [],
   products: [],
   isLoading: false,
   addToCartResult: "",
+  isDisplayFormOrder: false,
   isShowCartDropdown: false,
 });
 
@@ -23,9 +26,37 @@ const getters = {
       0
     );
   },
+
+  subTotal1(state) {
+    if(state.customerProducts === null || state.customerProducts === undefined ) return 0
+    return state.customerProducts.reduce(
+      (totalPrice, customerProduct) => totalPrice + customerProduct.quantity * customerProduct.product.price,
+      0
+    );
+  },
 };
 
 const actions = {
+  getAllOrders: async ({commit}) => {
+    try {
+      const res = await axios.get('orders', {withCredentials: true});
+      console.log(res);
+      commit("SET_ORDERS", res.data)
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  deleteOrder: async ({commit}, id) => {
+    let decision = confirm("Are you sure you want to delete?");
+      if (decision === true) {
+    try {
+      await axios.delete(`orders/${id}`, {withCredentials: true})
+      await commit('DELETE_ORDER', id)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  },
   async updateCart({commit}, {userId, product, quantity, replace = "", isPaid = 0}) {
       try {
         const res = await axios.post("order/upsert", {user_id: userId, product_id: product.id, quantity: quantity, replace: replace, is_paid: isPaid})
@@ -46,6 +77,15 @@ const actions = {
       console.log(e)
     }
   },
+  async getCartByCustomerId({commit}, id) {
+    try {
+      const res = await axios.get(`/orders/user/${id}`)
+      commit("CALL_CCART_FROM_SV", res.data)
+      console.log(res)
+    } catch (e) {
+      console.log(e)
+    }
+  },
   async deleteOrderItem({commit}, id) {
     try {
       const res = axios.delete(`/orders/${id}`)
@@ -59,9 +99,19 @@ const actions = {
 };
 
 const mutations = {
+  SET_ORDERS (state, orders) {
+    state.allProducts = orders;
+  },
+  DELETE_ORDER(state, id) {
+    const index = state.allProducts.findIndex(allProduct => allProduct.id === id)
+    state.allProducts.splice(index, 1)    
+  },
   CALL_CART_FROM_SV(state, cart) {
       state.products = cart
   },
+  CALL_CCART_FROM_SV(state, cart) {
+    state.customerProducts = cart
+},
   SET_PRODUCTS(state, products) {
     state.products = products;
   },
@@ -99,6 +149,13 @@ const mutations = {
       state.products[isExist].quantity = state.products[isExist].quantity + quantity
     }
   },
+  displayForm(state) {
+    if(state.isDisplayFormOrder == false) {
+     state.isDisplayFormOrder = true;
+    }else {
+      state.isDisplayFormOrder = false;
+    }
+   },
   REMOVE_ORDER(state, id) {
     state.products = state.products.filter(product => product.id !== id)
   },
