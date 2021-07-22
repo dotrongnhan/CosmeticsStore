@@ -19,7 +19,7 @@
       </div>
 
       <div class="w-size7 p-t-30 p-l-15 p-r-15 respon4">
-        <h4 class="s-text12 p-b-30">Categories</h4>
+        <h4 class="s-text12 p-b-30  text-center">Categories</h4>
 
         <ul>
           <li class="p-b-9" @click="summitCategory({ value: 'Toner', label: 'Toner' })">
@@ -45,45 +45,41 @@
       </div>
 
       <div class="w-size7 p-t-30 p-l-15 p-r-15 respon4">
-        <h4 class="s-text12 p-b-30">Links</h4>
+        <h4 class="s-text12 p-b-30 text-center">Links</h4>
 
         <ul>
           <li class="p-b-9">
-            <a href="#" class="s-text7"> Search </a>
+            <a href="#" class="s-text7"> Home </a>
           </li>
 
           <li class="p-b-9">
-            <a href="/about" class="s-text7"> About Us </a>
+            <a href="/about" class="s-text7"> Products </a>
           </li>
 
           <li class="p-b-9">
-            <a href="/contact" class="s-text7"> Contact Us </a>
+            <a href="/contact" class="s-text7"> About </a>
           </li>
 
           <li class="p-b-9">
-            <a href="/" class="s-text7"> Returns </a>
+            <a href="/" class="s-text7"> Contact </a>
           </li>
         </ul>
       </div>
 
       <div class="w-size7 p-t-30 p-l-15 p-r-15 respon4">
-        <h4 class="s-text12 p-b-30">Help</h4>
+        <h4 class="s-text12 p-b-30  text-center">Help</h4>
 
         <ul>
           <li class="p-b-9">
-            <a href="#" class="s-text7"> Track Order </a>
+            <a href="#" class="s-text7"> Facebook </a>
           </li>
 
           <li class="p-b-9">
-            <a href="#" class="s-text7"> Returns </a>
+            <a href="#" class="s-text7"> instagram </a>
           </li>
 
           <li class="p-b-9">
-            <a href="#" class="s-text7"> Shipping </a>
-          </li>
-
-          <li class="p-b-9">
-            <a href="#" class="s-text7"> FAQs </a>
+            <a href="#" class="s-text7"> About us </a>
           </li>
         </ul>
       </div>

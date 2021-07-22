@@ -72,7 +72,7 @@
                   <tr class="table-row">
                     <td class="column-1" colspan="4">
                       <div class="size15 trans-0-4">
-                      <button class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4 w-50">
+                      <button @click="this.$router.push('/payment')" class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4 w-50">
                         Proceed to Checkout
                       </button>
                     </div></td>
@@ -82,7 +82,6 @@
                 </table>
               </div>
             </div>
-            <CartTotals :subTotal="subTotal" />
       </div>
     </section>
   </div>
@@ -91,14 +90,9 @@
 <script>
 import {mapState, mapMutations, mapGetters, mapActions} from "vuex";
 import { currency } from "@/utils/currency";
-import CartTotals from "./CartTotals.vue";
 
 export default {
   name: "CartPage",
-
-  components: {
-    CartTotals,
-  },
 
   computed: {
     ...mapState("cart", ["products", "isLoading"]),
