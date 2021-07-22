@@ -9,6 +9,7 @@ const state = () => ({
 
 const getters = {
   totalItems(state) {
+    if(state.products === null || state.products === undefined ) return 0
     return state.products.reduce(
       (total, product) => total + product.quantity,
       0
@@ -16,6 +17,7 @@ const getters = {
   },
 
   subTotal(state) {
+    if(state.products === null || state.products === undefined ) return 0
     return state.products.reduce(
       (totalPrice, product) => totalPrice + product.quantity * product.product.price,
       0
@@ -81,11 +83,19 @@ const mutations = {
     product.totalPrice = product.price * product.quantity;
   },
   addProductToCart(state, {product, quantity}) {
-    const isExist = state.products.findIndex(item => item.product.id === product.id)
+    console.log(quantity)
+    let isExist = state.products?.findIndex(item => item.product.id === product.id)
+    if (isExist === undefined) {
+      console.log("isExist === undefined")
+      isExist = -1
+      state.products = []
+    }
     if(quantity === 0 ) return
     if (isExist === -1) {
       state.products.push({product: product, quantity: quantity});
     } else {
+      console.log(isExist)
+      isExist = state.products.findIndex(item => item.product.id === product.id)
       state.products[isExist].quantity = state.products[isExist].quantity + quantity
     }
   },
