@@ -2,6 +2,7 @@ import axios from "axios";
 
 const state = () => ({
   allProducts: [],
+  count: 0,
   customerProducts: [],
   products: [],
   isLoading: false,
@@ -43,9 +44,9 @@ const actions = {
   changeStatusOrderItems: async (_, {products, userId}) => {
       await axios.post('orders/change', {user_id: userId, products: products })
   },
-  getAllOrders: async ({commit}) => {
+  getAllOrders: async ({commit}, {offset = 1}) => {
     try {
-      const res = await axios.get('orders', {withCredentials: true});
+      const res = await axios.get(`orders?offset=${offset}`, {withCredentials: true});
       console.log(res);
       commit("SET_ORDERS", res.data)
     } catch (e) {
@@ -56,7 +57,7 @@ const actions = {
     let decision = confirm("Are you sure you want to delete?");
       if (decision === true) {
     try {
-      await axios.delete(`orders/${id}`, {withCredentials: true})
+      await axios.delete(`orders/admin/${id}`, {withCredentials: true})
       await commit('DELETE_ORDER', id)
     } catch (e) {
       console.log(e)
@@ -68,7 +69,7 @@ const actions = {
         const res = await axios.post("order/upsert", {user_id: userId, product_id: product.id, quantity: quantity, replace: replace, is_paid: isPaid})
         console.log("ok", res)
         if (replace === "") {
-          commit("addProductToCart", {product: product, quantity: quantity})
+          commit("addProductToCart", {userId: userId, productId: product.id, product: product, quantity: quantity})
         }
       } catch (e) {
         console.log(e)
@@ -94,9 +95,9 @@ const actions = {
   },
   async deleteOrderItem({commit}, product) {
     try {
-      const res = axios.delete(`/orders/${product.product.id}`, {withCredentials: true})
+      const res = await axios.delete(`/orders/${product.product.id}`, {withCredentials: true})
       console.log(res)
-      commit("REMOVE_ORDER", product.id)
+      commit("REMOVE_ORDER", product.product.id)
     } catch (e) {
       console.log(e)
     }
@@ -105,8 +106,9 @@ const actions = {
 };
 
 const mutations = {
-  SET_ORDERS (state, orders) {
-    state.allProducts = orders;
+  SET_ORDERS (state, data) {
+    state.allProducts = data.OrderItems;
+    state.count = data.Count;
   },
   DELETE_ORDER(state, id) {
     const index = state.allProducts.findIndex(allProduct => allProduct.id === id)
@@ -138,7 +140,7 @@ const mutations = {
 
     product.totalPrice = product.price * product.quantity;
   },
-  addProductToCart(state, {product, quantity}) {
+  addProductToCart(state, {userId, productId, product, quantity}) {
     console.log(quantity)
     let isExist = state.products?.findIndex(item => item.product.id === product.id)
     if (isExist === undefined) {
@@ -148,7 +150,7 @@ const mutations = {
     }
     if(quantity === 0 ) return
     if (isExist === -1) {
-      state.products.push({product: product, quantity: quantity});
+      state.products.push({user_id: userId, product_id: productId, product: product, quantity: quantity});
     } else {
       console.log(isExist)
       isExist = state.products.findIndex(item => item.product.id === product.id)
@@ -163,7 +165,7 @@ const mutations = {
     }
    },
   REMOVE_ORDER(state, id) {
-    state.products = state.products.filter(product => product.id !== id)
+    state.products = state.products.filter(product => product.product.id !== id)
   },
   REMOVE_CART(state) {
     state.products = []
