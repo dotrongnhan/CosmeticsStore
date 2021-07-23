@@ -15,11 +15,19 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type resOrder struct {
+	OrderItems []models.OrderItem
+	Count      int
+}
+
 func GetOrderItems(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	// var orders []models.Order
-	result := repository.GetOrderItems()
-	json.NewEncoder(w).Encode(result)
+	limit := 10
+	params := r.URL.Query()
+	offset, _ := strconv.Atoi(params.Get("offset"))
+	result, count := repository.GetOrderItems(limit, offset)
+	json.NewEncoder(w).Encode(resOrder{result, count})
 }
 
 func GetOrderItem(w http.ResponseWriter, r *http.Request) {
@@ -54,7 +62,6 @@ func getProduct(id uint) models.Product {
 	}
 	return product
 }
-
 
 func CreateOrderItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -105,7 +112,7 @@ func UpdateOrderItem(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "order with ID = %s was updated", params["id"])
 }
 
-func UpSertOrder(w http.ResponseWriter, r *http.Request)  {
+func UpSertOrder(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -117,18 +124,36 @@ func UpSertOrder(w http.ResponseWriter, r *http.Request)  {
 	order := database.DB.QueryRow("SELECT quantity FROM order_items WHERE user_id = ? AND product_id = ? AND is_paid = 0", data["user_id"], data["product_id"])
 	err = order.Scan(&quantity)
 	if err == sql.ErrNoRows {
-			database.DB.Exec("INSERT INTO order_items(user_id, product_id, quantity, is_paid) values (?, ?, ?, ?)",data["user_id"], data["product_id"], data["quantity"], data["is_paid"] )
-			return
+		database.DB.Exec("INSERT INTO order_items(user_id, product_id, quantity, is_paid) values (?, ?, ?, ?)", data["user_id"], data["product_id"], data["quantity"], data["is_paid"])
+		return
 	}
-	_, err = database.DB.Exec("UPDATE order_items SET quantity = ? WHERE user_id = ? AND product_id = ? AND is_paid = 0", int(quantity) + data["quantity"], data["user_id"], data["product_id"])
+	_, err = database.DB.Exec("UPDATE order_items SET quantity = ? WHERE user_id = ? AND product_id = ? AND is_paid = 0", int(quantity)+data["quantity"], data["user_id"], data["product_id"])
 	return
 }
 
 func DeleteOrderItem(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, _ := strconv.Atoi(params["id"])
-	fmt.Println(id)
-	errr := repository.DeleteOrderItem(id)
+	var idd string
+	var userId int
+	cookie, _ := r.Cookie("userId")
+	if cookie == nil {
+		userId = 0
+	} else {
+		idd, _ = util.ParseJwt(cookie.Value)
+		userId, _ = strconv.Atoi(idd)
+	}
+	errr := repository.DeleteOrderItem(id, userId)
+	if errr != nil {
+		fmt.Fprintln(w, "Cannot delete order!")
+	}
+	fmt.Fprintf(w, "order item with ID = %s was deleted", params["id"])
+}
+
+func DeleteOrder(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id, _ := strconv.Atoi(params["id"])
+	errr := repository.DeleteOrder(id)
 	if errr != nil {
 		fmt.Fprintln(w, "Cannot delete order!")
 	}
