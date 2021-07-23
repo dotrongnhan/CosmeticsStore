@@ -133,7 +133,6 @@ export default {
     if (getCookie("jwt")) {
       this.getUserExits()
       .then(() => this.getCartById(this.user.id))
-
     }
   },
   computed: mapState("users", ["isLoginSuccess", "user"]),

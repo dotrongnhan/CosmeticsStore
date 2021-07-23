@@ -150,7 +150,7 @@ export default {
   },
 
   created() {
-    this.$store.dispatch("products/getProducts");
+    this.getProducts({})
   },
   methods: {
     currency,
@@ -169,7 +169,7 @@ export default {
     },
     changePage(value) {
       this.pageIndex = value
-      this.$store.dispatch("products/getProducts", {category: this.value.value,sortType: this.direction.value ,offset: value});
+      this.getProducts({category: this.value.value,sortType: this.direction.value ,offset: value});
     },
     updateOrder(product) {
       this.updateCart({userId: this.user.id, product: product, quantity: 1})
@@ -177,7 +177,7 @@ export default {
 
   },
   computed: {
-    ...mapState("products", ["products", "count"]),
+    ...mapState("products", ["products", "count", "category"]),
     ...mapState("users", ["user"]),
     currentCategory() {
       return this.$store.state.products.category

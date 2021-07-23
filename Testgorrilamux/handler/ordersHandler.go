@@ -138,6 +138,7 @@ func DeleteOrderItem(w http.ResponseWriter, r *http.Request) {
 type Data struct {
 	UserId 		int 	`json:"user_id"`
 	Products 	[]int 	`json:"products"`
+	AddressShipping 	models.AddressShipping 	`json:"address_shipping"`
 }
 
 func ChangeStatusOrders(w http.ResponseWriter, r *http.Request) {
@@ -149,4 +150,6 @@ func ChangeStatusOrders(w http.ResponseWriter, r *http.Request) {
 		_, err := database.DB.Exec("update order_items set is_paid = 1 where user_id = ? and product_id = ? and is_paid = 0", value.UserId, item)
 		fmt.Println(err)
 	}
+	database.DB.Exec("INSERT INTO address_shipping(user_id, address, email, phone, full_name) values (?, ?, ?, ?, ?)",
+		value.AddressShipping.UserId, value.AddressShipping.Address,value.AddressShipping.Email, value.AddressShipping.Phone, value.AddressShipping.FullName)
 }

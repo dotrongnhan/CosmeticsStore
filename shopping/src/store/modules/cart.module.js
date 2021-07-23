@@ -40,8 +40,8 @@ const getters = {
 };
 
 const actions = {
-  changeStatusOrderItems: async (_, {products, userId}) => {
-      await axios.post('orders/change', {user_id: userId, products: products })
+  changeStatusOrderItems: async (_, {products, userId, addressShipping}) => {
+      await axios.post('orders/change', {user_id: userId, products: products, address_shipping: addressShipping })
   },
   getAllOrders: async ({commit}) => {
     try {
@@ -93,10 +93,11 @@ const actions = {
     }
   },
   async deleteOrderItem({commit}, product) {
+    console.log(product)
     try {
       const res = axios.delete(`/orders/${product.product.id}`, {withCredentials: true})
       console.log(res)
-      commit("REMOVE_ORDER", product.id)
+      commit("REMOVE_ORDER", product.product.id)
     } catch (e) {
       console.log(e)
     }
@@ -163,7 +164,7 @@ const mutations = {
     }
    },
   REMOVE_ORDER(state, id) {
-    state.products = state.products.filter(product => product.id !== id)
+    state.products = state.products.filter(product => product.product.id !== id)
   },
   REMOVE_CART(state) {
     state.products = []
