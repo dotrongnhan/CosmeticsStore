@@ -63,7 +63,7 @@
                     </td>
                     <td class="column-5 t-center">{{ currency(product.quantity * Number(product.product.price)) }}</td>
                     <td class="column-1">
-                      <button @click="deleteOrderItem(product.id)" class="flex-c-m w-50 bg1 bo-rad-8 hov1 s-text1 trans-0-4">
+                      <button @click="deleteOrderItem(product)" class="flex-c-m w-50 bg1 bo-rad-8 hov1 s-text1 trans-0-4">
                         X
                       </button>
                     </td>
@@ -72,7 +72,7 @@
                   <tr class="table-row">
                     <td class="column-1" colspan="4">
                       <div class="size15 trans-0-4">
-                      <button @click="this.$router.push('/checkout')" class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4 w-50">
+                      <button @click="go()" class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4 w-50">
                         Proceed to Checkout
                       </button>
                     </div></td>
@@ -96,16 +96,16 @@ export default {
 
   computed: {
     ...mapState("cart", ["products", "isLoading"]),
-    ...mapGetters("cart", ["subTotal"]),
+    ...mapGetters("cart", ["subTotal", "getProductsInCart"]),
     ...mapState("users", ["user"])
   },
   methods: {
     currency,
-    go(a) {
-      console.log(a)
+    go() {
+      this.changeStatusOrderItems({products: this.getProductsInCart, userId:this.user.id})
     },
     ...mapMutations("cart", ["updateProductQuantity"]),
-    ...mapActions("cart", ["updateCart", "deleteOrderItem"]),
+    ...mapActions("cart", ["updateCart", "deleteOrderItem", "changeStatusOrderItems"]),
     changeCart(data, quantity) {
       this.updateCart({userId: this.user.id, product: data.product, quantity: quantity})
 

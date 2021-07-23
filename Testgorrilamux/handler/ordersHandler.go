@@ -23,6 +23,7 @@ func GetOrderItems(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetOrderItem(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(1)
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 	id, _ := strconv.Atoi(params["id"])
@@ -34,11 +35,11 @@ func GetOrderItemsByUserId(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 	id, _ := strconv.Atoi(params["id"])
-	orders, _ := database.DB.Query("SELECT * FROM order_items where user_id = ?", id)
+	orders, _ := database.DB.Query("SELECT * FROM order_items where user_id = ? AND is_paid = 0", id)
 	var orderItems []models.OrderItem
 	for orders.Next() {
 		var order models.OrderItem
-		orders.Scan(&order.Id, &order.UserId, &order.ProductId, &order.Quantity, &order.IsPaid)
+		orders.Scan(&order.Id, &order.UserId, &order.ProductId, &order.Quantity, &order.IsPaid, &order.Ship)
 		order.Product = getProduct(order.ProductId)
 		orderItems = append(orderItems, order)
 	}
@@ -113,37 +114,39 @@ func UpSertOrder(w http.ResponseWriter, r *http.Request)  {
 	var data map[string]int
 	json.Unmarshal(body, &data)
 	var quantity uint
-	order := database.DB.QueryRow("SELECT quantity FROM order_items WHERE user_id = ? AND product_id = ?", data["user_id"], data["product_id"])
+	order := database.DB.QueryRow("SELECT quantity FROM order_items WHERE user_id = ? AND product_id = ? AND is_paid = 0", data["user_id"], data["product_id"])
 	err = order.Scan(&quantity)
 	if err == sql.ErrNoRows {
-		if data["replace"] > 0 {
-			database.DB.Exec("INSERT INTO order_items(user_id, product_id, quantity, is_paid, total) values (?, ?, ?, ?, ?)",data["user_id"], data["product_id"], data["replace"], data["is_paid"] )
-			return
-		}
-		if data["quantity"] > 0 {
 			database.DB.Exec("INSERT INTO order_items(user_id, product_id, quantity, is_paid) values (?, ?, ?, ?)",data["user_id"], data["product_id"], data["quantity"], data["is_paid"] )
 			return
-		}
-
 	}
-	if data["replace"] == 0 && data["quantity"] != 0{
-		fmt.Println(data["quantity"])
-		if int(quantity) <= data["quantity"] {
-			quantity = uint(data["quantity"])
-		}
-		_, err = database.DB.Exec("UPDATE order_items SET quantity = ? WHERE user_id = ? AND product_id = ?", int(quantity) + data["quantity"], data["user_id"], data["product_id"])
-		return
-	}
-	_, err = database.DB.Exec("UPDATE order_items SET quantity = ? WHERE user_id = ? AND product_id = ?", data["replace"], data["user_id"], data["product_id"])
+	_, err = database.DB.Exec("UPDATE order_items SET quantity = ? WHERE user_id = ? AND product_id = ? AND is_paid = 0", int(quantity) + data["quantity"], data["user_id"], data["product_id"])
 	return
 }
 
 func DeleteOrderItem(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, _ := strconv.Atoi(params["id"])
+	fmt.Println(id)
 	errr := repository.DeleteOrderItem(id)
 	if errr != nil {
 		fmt.Fprintln(w, "Cannot delete order!")
 	}
 	fmt.Fprintf(w, "order item with ID = %s was deleted", params["id"])
+}
+
+type Data struct {
+	UserId 		int 	`json:"user_id"`
+	Products 	[]int 	`json:"products"`
+}
+
+func ChangeStatusOrders(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	body, _ := ioutil.ReadAll(r.Body)
+	var value Data
+	json.Unmarshal(body, &value)
+	for _, item := range value.Products {
+		_, err := database.DB.Exec("update order_items set is_paid = 1 where user_id = ? and product_id = ? and is_paid = 0", value.UserId, item)
+		fmt.Println(err)
+	}
 }
