@@ -5,8 +5,10 @@ import (
 	"Testgorillamux/models"
 )
 
-func GetOrderItems() (orderItems []models.OrderItem) {
-	query, err := database.DB.Query("SELECT * FROM order_items")
+func GetOrderItems(limit int, offset int) (orderItems []models.OrderItem, countOrders int) {
+	offsetValue := limit * (offset - 1)
+	query, err := database.DB.Query("SELECT * FROM order_items LIMIT ? OFFSET ?", limit, offsetValue)
+	count, _ := database.DB.Query("SELECT COUNT(*) FROM order_items")
 	if err != nil {
 		err.Error()
 	}
@@ -21,7 +23,12 @@ func GetOrderItems() (orderItems []models.OrderItem) {
 		}
 		orderItems = append(orderItems, orderItem)
 	}
-	return orderItems
+
+	for count.Next() {
+		count.Scan(&countOrders)
+	}
+
+	return orderItems, countOrders
 }
 
 func GetOrderItem(id int) (orderItem models.OrderItem) {
@@ -81,8 +88,17 @@ func UpdateOrderItem(orderItem models.OrderItem, id int) error {
 	return err
 }
 
-func DeleteOrderItem(id int) error {
-	query, err := database.DB.Query("DELETE FROM order_items WHERE product_id = ? AND is_paid = 0", id)
+func DeleteOrderItem(id int, userId int) error {
+	query, err := database.DB.Query("DELETE FROM order_items WHERE product_id = ? AND user_id = ? AND is_paid = 0", id, userId)
+	if err != nil {
+		err.Error()
+	}
+	defer query.Close()
+	return err
+}
+
+func DeleteOrder(id int) error {
+	query, err := database.DB.Query("DELETE FROM order_items WHERE id = ?", id)
 	if err != nil {
 		err.Error()
 	}
