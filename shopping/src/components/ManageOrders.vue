@@ -28,26 +28,22 @@
         </div>
       </td>
       <td class="t-center parentCenter">
-          <button type="button" class="btn btn-danger" @click="deleteOrder(allProduct.id)">Delete</button>
+          <button type="button" class="btn btn-danger" @click="deleteOrder(allProduct.product)">Delete</button>
       </td>    
     </tr>
     </tbody>
   </table>
-    <!-- <FormHandleOrder v-show="isDisplayForm" :order="order"/> -->
 </template>
 
 <script>
 import {mapActions, mapState} from "vuex";
-// import FormHandleOrder from "./FormHandleOrder";
 
 export default {
     name: "ManageOrders",
     components: {
-    //   FormHandleOrder
     },
     data() {       
     return {
-    //  order: {},
     }
     },
     created() {
@@ -58,9 +54,6 @@ export default {
     },
     methods: {
     ...mapActions("cart", ["getAllOrders", "deleteOrder"]),
-    // getOrder(order) {
-    //   this.order = order
-    // },
     }
 }
 </script>

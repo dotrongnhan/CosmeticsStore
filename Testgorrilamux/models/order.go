@@ -17,4 +17,5 @@ type OrderItem struct {
 	IsPaid    int      `json:"is_paid"`
 	Product   Product  `json:"product"`
 	User      Customer `json:"user"`
+	Ship 	  string	`json:"ship"`
 }

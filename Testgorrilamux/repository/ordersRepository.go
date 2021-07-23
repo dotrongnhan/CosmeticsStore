@@ -13,7 +13,7 @@ func GetOrderItems() (orderItems []models.OrderItem) {
 	defer query.Close()
 	for query.Next() {
 		var orderItem models.OrderItem
-		err := query.Scan(&orderItem.Id, &orderItem.UserId, &orderItem.ProductId, &orderItem.Quantity, &orderItem.IsPaid)
+		err := query.Scan(&orderItem.Id, &orderItem.UserId, &orderItem.ProductId, &orderItem.Quantity, &orderItem.IsPaid, &orderItem.Ship)
 		orderItem.Product = GetProduct(int(orderItem.ProductId))
 		orderItem.User = GetUser(int(orderItem.UserId))
 		if err != nil {
@@ -82,10 +82,14 @@ func UpdateOrderItem(orderItem models.OrderItem, id int) error {
 }
 
 func DeleteOrderItem(id int) error {
-	query, err := database.DB.Query("DELETE FROM order_items WHERE id = ?", id)
+	query, err := database.DB.Query("DELETE FROM order_items WHERE product_id = ? AND is_paid = 0", id)
 	if err != nil {
 		err.Error()
 	}
 	defer query.Close()
 	return err
 }
+
+//func ChangeStatus(data )  {
+//
+//}
