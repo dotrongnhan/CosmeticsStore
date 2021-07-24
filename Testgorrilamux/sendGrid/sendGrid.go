@@ -52,7 +52,7 @@ func SendEmailBySendGrid(data models.Data) {
 	<h2>Sumary</h2>
 	<h4>Subtotal: $` + Subtotal + ` </h4>`
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
-	client := sendgrid.NewSendClient("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")
+	client := sendgrid.NewSendClient("")
 	response, err := client.Send(message)
 	if err != nil {
 		log.Println(err)
