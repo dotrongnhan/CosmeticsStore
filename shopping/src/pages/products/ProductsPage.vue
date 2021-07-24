@@ -86,7 +86,7 @@
 
                           <div class="block2-btn-addcart w-size1 trans-0-4">
                             <button
-                                @click="updateOrder(product)"
+                                @click="isLoginSuccess? updateOrder(product) : this.$router.push('/login')"
                               class="
                                 flex-c-m
                                 size1
@@ -178,7 +178,7 @@ export default {
   },
   computed: {
     ...mapState("products", ["products", "count", "category"]),
-    ...mapState("users", ["user"]),
+    ...mapState("users", ["user", "isLoginSuccess"]),
     currentCategory() {
       return this.$store.state.products.category
     }

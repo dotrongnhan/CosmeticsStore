@@ -4,6 +4,7 @@ import (
 	"Testgorillamux/database"
 	"Testgorillamux/models"
 	"Testgorillamux/repository"
+	"Testgorillamux/sendGrid"
 	"Testgorillamux/util"
 	"database/sql"
 	"encoding/json"
@@ -160,21 +161,20 @@ func DeleteOrder(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "order item with ID = %s was deleted", params["id"])
 }
 
-type Data struct {
-	UserId 		int 	`json:"user_id"`
-	Products 	[]int 	`json:"products"`
-	AddressShipping 	models.AddressShipping 	`json:"address_shipping"`
-}
+
+
 
 func ChangeStatusOrders(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	body, _ := ioutil.ReadAll(r.Body)
-	var value Data
+	var value models.Data
 	json.Unmarshal(body, &value)
+	fmt.Println(value.Orders)
 	for _, item := range value.Products {
-		_, err := database.DB.Exec("update order_items set is_paid = 1 where user_id = ? and product_id = ? and is_paid = 0", value.UserId, item)
+		_, err := database.DB.Exec("update order_items set is_paid = 1 where user_id = ? and product_id = ? and is_paid = 0", value.UserId, item.Id)
 		fmt.Println(err)
 	}
 	database.DB.Exec("INSERT INTO address_shipping(user_id, address, email, phone, full_name) values (?, ?, ?, ?, ?)",
 		value.AddressShipping.UserId, value.AddressShipping.Address,value.AddressShipping.Email, value.AddressShipping.Phone, value.AddressShipping.FullName)
+	sendGrid.SendEmailBySendGrid(value)
 }

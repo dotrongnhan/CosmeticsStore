@@ -108,7 +108,7 @@
                   <button class="btn btn-outline-secondary" @click="close">Back</button>
                 </div>
                 <div class="col-6">
-                  <button class="btn btn-outline-success" @click="close; submit()">Submit</button>
+                  <button class="btn btn-outline-success" @click.prevent="close; submit()">Submit</button>
                 </div>
               </div>
             </Form>
@@ -209,7 +209,7 @@ export default {
       if (this.product.id) {
         this.updateProduct({id: this.product.id, product: productSubmitted})
       } else {
-        this.createProduct(productSubmitted).then(() => this.getProducts({}))
+        this.createProduct(productSubmitted)
       }
     },
     close: function () {

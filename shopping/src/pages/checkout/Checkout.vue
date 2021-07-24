@@ -163,7 +163,9 @@ export default {
                     email: this.infor.email,
                     phone: this.infor.phone,
                     full_name: this.infor.fullName
-                  }
+                  },
+                  orders: this.products,
+                  total: this.subTotal
                 })
                 await this.REMOVE_CART();
                 await this.$router.push("/")
@@ -173,7 +175,7 @@ export default {
               }
             },
             onError: err => {
-              console.log("onError")
+              this.$router.push("/home")
               console.log(err);
             }
           })

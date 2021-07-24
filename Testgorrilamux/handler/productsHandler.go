@@ -53,7 +53,6 @@ func CreateProduct(w http.ResponseWriter, r *http.Request) {
 	if error != nil {
 		fmt.Fprintln(w, "Cannot create product!")
 	}
-	fmt.Fprintf(w, "New product was created")
 	json.NewEncoder(w).Encode(product)
 }
 

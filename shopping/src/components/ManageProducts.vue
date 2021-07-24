@@ -27,7 +27,6 @@
             :value="currentCategory"
         />
       </div>
-      <input v-model="message" placeholder="Search here">
     </div>
     <div>
       <Pagination

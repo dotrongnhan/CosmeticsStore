@@ -91,7 +91,7 @@
                       s-text1
                       trans-0-4
                     "
-                    @click="submitNewProduct(product)">
+                    @click="isLoginSuccess ? submitNewProduct(product) : this.$router.push('/login')">
                     Add to Cart
                   </button>
                 </div>
@@ -158,7 +158,7 @@ export default {
   },
   computed: {
     ...mapState("products", ["products", "product"]),
-    ...mapState("users", ["user"])
+    ...mapState("users", ["user", "isLoginSuccess"])
   },
   created() {
     this.$store.dispatch("products/getProductById", this.$route.params.id);

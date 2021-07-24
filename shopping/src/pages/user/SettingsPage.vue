@@ -19,6 +19,7 @@
 import ManageProducts from "../../components/ManageProducts";
 import ManageUsers from "../../components/ManageUsers";
 import ManageOrders from "../../components/ManageOrders";
+import {mapState} from "vuex";
 
 export default {
   name: "SettingsPage",
@@ -31,6 +32,14 @@ export default {
     return {
       componentSelected: "ManageProducts"
     }
+  },
+  created() {
+    if(this.user.role_id !== 1) {
+      this.$router.push("/")
+    }
+  },
+  computed: {
+    ...mapState("users", ["user"])
   }
 };
 </script>
