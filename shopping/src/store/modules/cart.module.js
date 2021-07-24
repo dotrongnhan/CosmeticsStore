@@ -36,13 +36,14 @@ const getters = {
     );
   },
   getProductsInCart(state) {
-      return state.products.map(item => item.product.id)
+      return state.products.map(item => item.product)
   }
 };
 
 const actions = {
-  changeStatusOrderItems: async (_, {products, userId}) => {
-      await axios.post('orders/change', {user_id: userId, products: products })
+  changeStatusOrderItems: async (_, {products, userId, addressShipping, orders, total }) => {
+    console.log(orders, total)
+      await axios.post('orders/change', {user_id: userId, products: products, address_shipping: addressShipping, orders: orders, total: total })
   },
   getAllOrders: async ({commit}, {offset = 1}) => {
     try {
@@ -94,6 +95,7 @@ const actions = {
     }
   },
   async deleteOrderItem({commit}, product) {
+    console.log(product)
     try {
       const res = await axios.delete(`/orders/${product.product.id}`, {withCredentials: true})
       console.log(res)

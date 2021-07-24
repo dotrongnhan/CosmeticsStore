@@ -9,7 +9,7 @@
 
     <div
       class="header-cart header-dropdown"
-      :class="{ 'show-header-dropdown': isShowCartDropdown }"
+      :class="{ 'show-header-dropdown': isShowCartDropdown && isLoginSuccess }"
     >
       <p>{{ addToCartResult }}</p>
 
@@ -61,6 +61,7 @@ export default {
   computed: {
     ...mapState("cart", ["products", "isShowCartDropdown", "addToCartResult"]),
     ...mapGetters("cart", ["totalItems", "subTotal"]),
+    ...mapState("users",["isLoginSuccess"])
   },
 
   methods: {

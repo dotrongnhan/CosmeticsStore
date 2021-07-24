@@ -21,7 +21,7 @@
                 <router-link to="/user/profile">Profile</router-link>
               </li>
               <li>
-                <router-link to="/user/settings">Settings</router-link>
+                <router-link v-if="user.role_id === 1" to="/user/settings">Settings</router-link>
               </li>
               <li>
                 <router-link to="/" @click="logout()">Logout</router-link>

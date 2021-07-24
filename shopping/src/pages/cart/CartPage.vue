@@ -72,7 +72,7 @@
                   <tr class="table-row">
                     <td class="column-1" colspan="4">
                       <div class="size15 trans-0-4">
-                      <button @click="go()" class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4 w-50">
+                      <button @click="totalItems > 0 ? this.$router.push('/checkout') : this.$router.push('/products')" class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4 w-50">
                         Proceed to Checkout
                       </button>
                     </div></td>
@@ -96,14 +96,11 @@ export default {
 
   computed: {
     ...mapState("cart", ["products", "isLoading"]),
-    ...mapGetters("cart", ["subTotal", "getProductsInCart"]),
+    ...mapGetters("cart", ["subTotal", "getProductsInCart", "totalItems"]),
     ...mapState("users", ["user"])
   },
   methods: {
     currency,
-    go() {
-      this.changeStatusOrderItems({products: this.getProductsInCart, userId:this.user.id})
-    },
     ...mapMutations("cart", ["updateProductQuantity"]),
     ...mapActions("cart", ["updateCart", "deleteOrderItem", "changeStatusOrderItems"]),
     changeCart(data, quantity) {

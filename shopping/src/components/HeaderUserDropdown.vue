@@ -14,7 +14,7 @@
     >
     <div class="dropdown-content">
     <router-link to="/user/profile">Profile</router-link>
-    <router-link to="/user/settings">Settings</router-link>
+    <router-link v-if="user.role_id === 1" to="/user/settings">Settings</router-link>
     <router-link to="/" @click="logoutApp()">Sign out</router-link>
   </div>
     </div>

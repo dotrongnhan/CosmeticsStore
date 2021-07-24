@@ -38,9 +38,11 @@ const actions = {
       console.log(e)
     }
   },
-  createProduct: async ( _, product) => {
+  createProduct: async ( {commit}, product) => {
     try {
-      await axios.post("products", product, {withCredentials: true})
+      const res = await axios.post("products", product, {withCredentials: true})
+      commit("CREATE_PRODUCT", res.data)
+      console.log(res)
     } catch (e) {
       console.log(e)
     }
@@ -57,6 +59,9 @@ const mutations = {
   DELETE_PRODUCT (state, id) {
     const index = state.products.findIndex(product => product.id === id)
     state.products.splice(index, 1)
+  },
+  CREATE_PRODUCT(state, product) {
+    state.products = [product, ...state.products]
   },
   GET_PRODUCTS (state, data) {
     state.products = data.Products

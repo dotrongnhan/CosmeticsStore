@@ -62,7 +62,7 @@
             <div class="text-center s-text20 font-weight-bold mb-3">Please pay to complete checkout</div>
             <div class="d-flex justify-content-center" id="paypal-button-container"></div>
           </div>
-          <div v-if="infor.fullName ==='' || infor.address === '' || infor.email==='' || infor.phone ==='' " class="text-center text-warning">Please fill in the recipient's information</div>
+          <div v-if="infor.fullName ==='' || infor.address === '' || infor.email==='' || infor.phone ==='' " class="text-center text-warning mb-5">Please fill in the recipient's information</div>
         </Form>
       </div>
     </div>
@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import {mapGetters, mapState} from "vuex";
+import {mapGetters, mapState, mapActions, mapMutations} from "vuex";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import {currency} from "../../utils/currency";
@@ -119,11 +119,14 @@ export default {
     };
   },
   computed: {
+    ...mapState("users",["user"]),
     ...mapState("cart", ["products"]),
-    ...mapGetters("cart", ["totalItems","subTotal"])
+    ...mapGetters("cart", ["totalItems","subTotal", "getProductsInCart"])
   },
   methods: {
     currency,
+    ...mapActions("cart", ["changeStatusOrderItems"]),
+    ...mapMutations("cart", ["REMOVE_CART"]),
     setLoaded: function() {
       this.loaded = true;
       window.paypal
@@ -147,16 +150,38 @@ export default {
               });
             },
             onApprove: async (data, actions) => {
-              const order = await actions.order.capture();
-              this.paidFor = true;
-              console.log(order);
+              try {
+                const order = await actions.order.capture();
+                this.paidFor = true;
+                console.log(order);
+                await this.changeStatusOrderItems({
+                  userId: this.user.id,
+                  products: this.getProductsInCart,
+                  addressShipping: {
+                    user_id: this.user.id,
+                    address: this.infor.address,
+                    email: this.infor.email,
+                    phone: this.infor.phone,
+                    full_name: this.infor.fullName
+                  },
+                  orders: this.products,
+                  total: this.subTotal
+                })
+                await this.REMOVE_CART();
+                await this.$router.push("/")
+              } catch (e) {
+                console.log(1)
+                console.log(e)
+              }
             },
             onError: err => {
+              this.$router.push("/home")
               console.log(err);
             }
           })
           .render('#paypal-button-container');
-    }
+    },
+
   }
 }
 </script>

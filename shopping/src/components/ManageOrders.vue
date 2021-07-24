@@ -2,7 +2,7 @@
   <div class="flex-w mb-4 d-flex justify-content-end">
     <div>
       <Pagination
-          :length="count"
+          :length="allProducts.length"
           :pageSize="limit"
           :pageIndex="pageIndex"
           @change="changePage"
@@ -65,7 +65,7 @@ export default {
     }
     },
     computed: {
-    ...mapState("cart", ["allProducts", "count"]),
+    ...mapState("cart", ["allProducts"]),
     },
     created() { 
         this.getAllOrders({});
